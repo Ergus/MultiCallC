@@ -5,7 +5,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int square(int);
-int cube(int);
+// The macro and the extern is to make the code
+// compatible with CTypes
+#ifdef __cplusplus
+extern "C" {
+#endif
+    
+    int square(int);
+    int cube(int);
+    
+#ifdef __cplusplus
+};
+#endif
 
 #endif
