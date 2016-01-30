@@ -7,7 +7,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 
-add_library(fun STATIC ${PROJECT_SOURCE_DIR}/src/libfun.cc)
+add_library(fun SHARED ${PROJECT_SOURCE_DIR}/src/libfun.cc)
 
 add_executable(main main.cc)
 
