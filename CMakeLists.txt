@@ -13,5 +13,9 @@ add_executable(main main.cc)
 
 target_link_libraries(main fun)
 
+# For tests
 
 enable_testing()
+
+add_subdirectory(test)
+
