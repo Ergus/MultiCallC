@@ -11,4 +11,6 @@ This is a simple project to show in how:
 
 * Interface Python-C++ with CTypes for the library compiled with CMake.
 
+* Interface Fortran-C++ with modern Fortran interface and compiled with CMake.
+
 Author: Jimmy Aguilar Mena
