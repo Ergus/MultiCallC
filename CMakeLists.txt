@@ -16,11 +16,15 @@ add_library(fun SHARED ${PROJECT_SOURCE_DIR}/src/libfun.cc)
 add_executable(main_c main.cc)
 target_link_libraries(main_c fun)
 
+add_test(NAME Test_C++ COMMAND main_c)
+
 # FORTRAN main_f
 
 add_executable(main_f main.f90)
 set_target_properties(main_f PROPERTIES LINKER_LANGUAGE Fortran)
 target_link_libraries(main_f fun)
+
+add_test(NAME Test_Fortran COMMAND main_f)
 
 # Java main_j
 find_package(Java REQUIRED)
@@ -42,7 +46,7 @@ add_jar(main_j main_j.java)
 get_target_property(_jarFile main_j JAR_FILE)
 get_target_property(_classDir main_j CLASSDIR)
 
-add_test(NAME Test_main_j
+add_test(NAME Test_Java
   COMMAND ${Java_JAVA_EXECUTABLE}
   -Djava.library.path=${CMAKE_CURRENT_BINARY_DIR}
   -cp ${_jarFile} main_j)
@@ -52,9 +56,13 @@ add_test(NAME Test_main_j
 
 configure_file(${PROJECT_SOURCE_DIR}/main.py ${PROJECT_BINARY_DIR})
 
+add_test(NAME Test_Python COMMAND main.py)
+
 # For Ruby executable
 
 configure_file(${PROJECT_SOURCE_DIR}/main.rb ${PROJECT_BINARY_DIR})
+
+add_test(NAME Test_Ruby COMMAND main.rb)
 
 # For tests
 
