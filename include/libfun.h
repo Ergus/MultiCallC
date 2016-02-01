@@ -13,9 +13,10 @@ extern "C" {
     
     int square(int);
     int cube(int);
+    void print(int, double*);
     
 #ifdef __cplusplus
-};
+}
 #endif
 
 #endif
