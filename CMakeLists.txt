@@ -27,6 +27,10 @@ target_link_libraries(main_f fun)
 
 configure_file(${PROJECT_SOURCE_DIR}/main.py ${PROJECT_BINARY_DIR})
 
+# For Ruby executable
+
+configure_file(${PROJECT_SOURCE_DIR}/main.rb ${PROJECT_BINARY_DIR})
+
 # For tests
 
 enable_testing()

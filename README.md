@@ -13,4 +13,6 @@ This is a simple project to show in how:
 
 * Interface Fortran-C++ with modern Fortran interface and compiled with CMake.
 
+* Interface Ruby-C++ with ffi for the library compiled with CMake.
+
 Author: Jimmy Aguilar Mena
