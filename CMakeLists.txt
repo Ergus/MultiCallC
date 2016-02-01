@@ -11,17 +11,42 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 
 add_library(fun SHARED ${PROJECT_SOURCE_DIR}/src/libfun.cc)
 
-# C main.x
+# C main_c
 
 add_executable(main_c main.cc)
 target_link_libraries(main_c fun)
 
-# FORTRAN main2.x
+# FORTRAN main_f
 
 add_executable(main_f main.f90)
 set_target_properties(main_f PROPERTIES LINKER_LANGUAGE Fortran)
-
 target_link_libraries(main_f fun)
+
+# Java main_j
+find_package(Java REQUIRED)
+include(UseJava)
+
+find_package(JNI)
+
+set(CMAKE_JAVA_COMPILE_FLAGS "-source" "1.8" "-target" "1.8")
+
+include_directories(${JAVA_INCLUDE_PATH} ${JAVA_INCLUDE_PATH2} ${PROJECT_SOURCE_DIR}/include)
+
+add_library(funjava MODULE ${PROJECT_SOURCE_DIR}/src/main_j.cc)
+
+target_link_libraries(funjava ${JNI_LIBRARIES})
+target_link_libraries(funjava fun)
+
+add_jar(main_j main_j.java)
+
+get_target_property(_jarFile main_j JAR_FILE)
+get_target_property(_classDir main_j CLASSDIR)
+
+add_test(NAME Test_main_j
+  COMMAND ${Java_JAVA_EXECUTABLE}
+  -Djava.library.path=${CMAKE_CURRENT_BINARY_DIR}
+  -cp ${_jarFile} main_j)
+
 
 # For Python executable
 

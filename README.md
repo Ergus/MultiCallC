@@ -17,4 +17,6 @@ This is a simple project to show in how:
 
 * Interface Ruby-C++ with ffi for the library compiled with CMake.
 
+* Interface Java-C++ with jni for the library compiled with CMake, two new files as wraper src/main_j.cc and include/main_j.h and a test in the CmakeLists.txt because the command is complicated.
+
 Author: Jimmy Aguilar Mena
