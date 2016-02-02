@@ -18,6 +18,13 @@ target_link_libraries(main_c fun)
 
 add_test(NAME Test_C++ COMMAND main_c)
 
+# C main with signals using dynamic linking.
+
+add_executable(main_S main_S.cc)
+target_link_libraries(main_S dl)
+
+add_test(NAME Test_Signal COMMAND main_S)
+
 # FORTRAN main_f
 
 add_executable(main_f main.f90)
