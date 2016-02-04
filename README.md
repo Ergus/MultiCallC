@@ -21,4 +21,6 @@ This is a simple project to show in how:
 
 * Interface C-C using signals with dl library and without a header.
 
+* Interface NASM-C with array in the stack and direct call. The real challenge is the CMake implementation.
+
 Author: Jimmy Aguilar Mena
