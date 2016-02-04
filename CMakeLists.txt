@@ -11,6 +11,25 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 
 add_library(fun SHARED ${PROJECT_SOURCE_DIR}/src/libfun.cc)
 
+# Nasm
+
+set(CMAKE_C_SIZEOF_DATA_PTR 8)
+enable_language(ASM_NASM)
+
+set(CMAKE_ASM_NASM_COMPILER "nasm")
+set(CMAKE_ASM_NASM_LINKER "gcc")
+
+set(ASM_DIALECT "_NASM")
+
+set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <FLAGS> -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} -o <OBJECT> <SOURCE>")
+set(CMAKE_ASM_NASM_LINK_EXECUTABLE "${CMAKE_ASM_NASM_LINKER} <OBJECTS> -o <TARGET> <LINK_LIBRARIES> -Wl,-rpath,<CMAKE_CURRENT_BINARY_DIR>")
+
+
+add_executable(main_asm main.asm)
+target_link_libraries(main_asm fun)
+
+add_test(NAME Test_NASM COMMAND main_asm)
+
 # C main_c
 
 add_executable(main_c main.cc)
@@ -34,6 +53,9 @@ target_link_libraries(main_f fun)
 add_test(NAME Test_Fortran COMMAND main_f)
 
 # Java main_j
+
+set(JAVA_HOME "/usr/lib/jvm/java-8-openjdk")
+
 find_package(Java REQUIRED)
 include(UseJava)
 
