@@ -29,13 +29,24 @@ PROGRAM main
        INTEGER(kind=c_int), VALUE, INTENT(IN)  :: size
        REAL(kind=c_double), INTENT(IN), DIMENSION(*)  :: array
      END SUBROUTINE print
-  END INTERFACE  
+  END INTERFACE
 
+  ! Third test
+  
+  INTERFACE
+     SUBROUTINE printstr( str) bind(C)
+       use, intrinsic       :: iso_c_binding
+       CHARACTER(kind=c_char) :: str(*)
+     END SUBROUTINE printstr
+  END INTERFACE  
   
   INTEGER i, j, k
 
   INTEGER :: size=6
   REAL(8), DIMENSION(1:6) :: array
+
+  ! For third test
+  CHARACTER (LEN=*), PARAMETER :: str="my string"
 
   ! First
   
@@ -52,5 +63,10 @@ PROGRAM main
   END DO
   
   CALL print(size,array)
+
+  ! Third
+
+  call printstr(str)
+  
   
 END PROGRAM main

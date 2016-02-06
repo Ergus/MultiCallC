@@ -5,7 +5,7 @@ This is a simple project to show in how:
 
 * Create a dynamic library with a source and a header in subdirs.
 
-* Pass integers and a double array from any language to C.
+* Pass integers, double arrays and strings from any language to C.
 
 * Create an executable and link it with the library.
 

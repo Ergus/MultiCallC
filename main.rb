@@ -8,6 +8,7 @@ module Libfun
     attach_function :square, [ :int ], :int
     attach_function :cube, [ :int ], :int
     attach_function :print, [ :int, :pointer ], :void
+    attach_function :printstr, [ :string ], :void
 end
 
 # First Part
@@ -30,3 +31,8 @@ Libfun.print(size,pointer)
 
 # Get the array and put it in `result_array` for use (C array to Ruby, not used here)
 #result_array = result_pointer.read_array_of_double(size)
+
+# Third part
+str="my string"
+
+Libfun.printstr(str)

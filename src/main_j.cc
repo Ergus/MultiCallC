@@ -30,3 +30,12 @@ JNIEXPORT jint JNICALL Java_main_1j_print
   
   return 0;
   }
+
+JNIEXPORT jint JNICALL Java_main_1j_printstr
+(JNIEnv *env, jobject, jstring str){
+    const char *tmpstr = env->GetStringUTFChars(str, 0);
+    printstr(tmpstr);
+
+    //(*env)->ReleaseStringUTFChars(env, javaString, nativeString);
+    return 0;
+    }

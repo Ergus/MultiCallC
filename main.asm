@@ -3,11 +3,13 @@ extern printf
 extern square
 extern cube
 extern print
+extern printstr
         
 global main
 
 section .data
 format: db "%d",9,"x^2=%2d x^3=%2d", 10, 0
+mystring: db "my string"
         
 section .text
 main:
@@ -55,6 +57,10 @@ main:
     mov rsi, rsp                ; puntero 
 
     call print
+
+    ; Third Part
+    mov rdi, mystring
+    call printstr
         
     mov rsp, rbp                ; 
     pop rbp                     ; restore stack

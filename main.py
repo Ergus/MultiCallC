@@ -17,12 +17,21 @@ for i in range(5):
           (i, libfun.square(i), libfun.cube(i)));
 
 # Second test
+libfun.print.restype= None
 libfun.print.argtypes=[C.c_int,
                       np.ctypeslib.ndpointer(C.c_double, flags="C_CONTIGUOUS")]
 
 size=6
 arr= np.arange(1,size+1,dtype=C.c_double)
-
 libfun.print(size,arr)
+
+# Third test
+libfun.printstr.restype= None
+libfun.printstr.argtypes=[C.c_char_p]
+
+str="my string"
+
+libfun.printstr(str.encode('utf-8'))
+
 
 

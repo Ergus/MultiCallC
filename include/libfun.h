@@ -14,6 +14,7 @@ extern "C" {
     int square(int);
     int cube(int);
     void print(int, double*);
+    void printstr(const char *);
     
 #ifdef __cplusplus
 }

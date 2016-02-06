@@ -1,6 +1,6 @@
 
 #include <libfun.h>
-
+#include <string.h>
 
 int square(int x){
     return x*x;
@@ -15,4 +15,9 @@ void print(int size, double* array){
     printf("%2.3lf; ",array[i]);
     }
   printf("\n");
+  }
+
+
+void printstr(const char *str){
+  printf("The string \"%s\" has %u letters\n",str,(unsigned)strlen(str));
   }

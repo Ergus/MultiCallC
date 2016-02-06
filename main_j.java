@@ -7,6 +7,7 @@ public class main_j {
   native int square(int i);
   native int cube(int i);
   native int print(int i, double [] array);
+  native int printstr(String str);
         
   static {
     System.loadLibrary("funjava");
@@ -28,6 +29,10 @@ public class main_j {
     for(int i=0;i<size;i++) array[i]=i+1;
     
     libfun.print(size,array);
+
+    // Third part
+    String str="my string";
+    libfun.printstr(str);
     
     }
         

@@ -6,6 +6,7 @@ int main(){
     int (*square)(int);
     int (*cube)(int);
     void (*print)(int, double*);
+    void (*printstr)(char*);
     
     libfun = dlopen("./libfun.so",RTLD_LAZY);
 
@@ -13,6 +14,7 @@ int main(){
         square = (int (*)(int)) dlsym(libfun,"square");
         cube = (int (*)(int)) dlsym(libfun,"cube");
         print = (void (*)(int, double*)) dlsym(libfun,"print");
+        printstr = (void (*)(char*)) dlsym(libfun,"printstr");
         }
     else{
         printf("Error Opening plugging\n");
@@ -31,6 +33,10 @@ int main(){
     for(int i=0;i<size;i++) arr[i]=double(i+1);
     
     (*print)(size,arr);
+
+    // Third test
+    char str[]="my string";
+    (*printstr)(str);    
 
     dlclose(libfun);
     

@@ -15,13 +15,29 @@ extern "C" {
 JNIEXPORT jint JNICALL Java_main_1j_square
   (JNIEnv *, jobject, jint);
 
-
+/*
+ * Class:     main_j
+ * Method:    cube
+ * Signature: (I)I
+ */
 JNIEXPORT jint JNICALL Java_main_1j_cube
   (JNIEnv *, jobject, jint);
 
-
+/*
+ * Class:     main_j
+ * Method:    print
+ * Signature: (I[D)I
+ */
 JNIEXPORT jint JNICALL Java_main_1j_print
   (JNIEnv *, jobject, jint, jdoubleArray);
+
+/*
+ * Class:     main_j
+ * Method:    printstr
+ * Signature: (Ljava/lang/String;)I
+ */
+JNIEXPORT jint JNICALL Java_main_1j_printstr
+  (JNIEnv *, jobject, jstring);
 
 #ifdef __cplusplus
 }
