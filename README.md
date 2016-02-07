@@ -23,4 +23,6 @@ This is a simple project to show in how:
 
 * Interface NASM-C with array in the stack and direct call. The real challenge is the CMake implementation.
 
+* Interface Julia-C with the native ccall function.
+
 Author: Jimmy Aguilar Mena

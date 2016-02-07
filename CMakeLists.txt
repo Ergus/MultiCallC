@@ -87,6 +87,12 @@ configure_file(${PROJECT_SOURCE_DIR}/main.py ${PROJECT_BINARY_DIR})
 
 add_test(NAME Test_Python COMMAND main.py)
 
+# For Julia executable
+
+configure_file(${PROJECT_SOURCE_DIR}/main.jl ${PROJECT_BINARY_DIR})
+
+add_test(NAME Test_Julia COMMAND main.jl)
+
 # For Ruby executable
 
 configure_file(${PROJECT_SOURCE_DIR}/main.rb ${PROJECT_BINARY_DIR})
@@ -94,7 +100,5 @@ configure_file(${PROJECT_SOURCE_DIR}/main.rb ${PROJECT_BINARY_DIR})
 add_test(NAME Test_Ruby COMMAND main.rb)
 
 # For tests
-
 enable_testing()
-
 add_subdirectory(test)
