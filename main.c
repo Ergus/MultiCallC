@@ -1,8 +1,11 @@
 #include "libfun.h"
 
 int main(){
+
+    int i;
+    
     // First test
-    for(int i=0;i<5;i++){
+    for(i=0;i<5;i++){
         printf("%d\tx^2=%2d\tx^3=%2d\n", i, square(i), cube(i));
         }
 
@@ -10,7 +13,7 @@ int main(){
     const int size=6;
     double arr[size];
     
-    for(int i=0;i<size;i++) arr[i]=double(i+1);
+    for(i=0;i<size;i++) arr[i]=(double)(i+1);
     
     print(size,arr);
 

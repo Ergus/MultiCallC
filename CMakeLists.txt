@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.4)
 
-project (Jimmy CXX Fortran)
+project (Jimmy C CXX Fortran)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
@@ -32,10 +32,19 @@ add_test(NAME Test_NASM COMMAND main_asm)
 
 # C main_c
 
-add_executable(main_c main.cc)
+add_executable(main_c main.c)
 target_link_libraries(main_c fun)
 
-add_test(NAME Test_C++ COMMAND main_c)
+add_test(NAME Test_C COMMAND main_c)
+
+# C++ 11 main_c11
+
+set_source_files_properties(main_c11.cc PROPERTIES COMPILE_FLAGS -std=c++11)
+
+add_executable(main_c11 main_c11.cc)
+target_link_libraries(main_c11 fun)
+
+add_test(NAME Test_C++11 COMMAND main_c)
 
 # C main with signals using dynamic linking.
 
