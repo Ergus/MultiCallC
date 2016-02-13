@@ -19,7 +19,7 @@ main:
     mov ebx, 5               ; counter down
     mov r12, 0               ; counter up
         
-    L1:
+    .L1:
         ; call square
         mov rdi, r12
         call square
@@ -39,20 +39,20 @@ main:
         
         inc r12
         dec rbx                 ; keep counting
-        jne L1  
+        jne .L1  
 
     ; Second part
     mov rbx, 6                  ; size
     mov rdi, rbx                ; primer argumento de la funcion
     pxor xmm0, xmm0             
         
-    L2:
+    .L2:
         sub rsp, 8
         cvtsi2sd xmm0, rbx
         movsd [rsp], xmm0
         
         dec rbx
-        jne L2
+        jne .L2
 
     mov rsi, rsp                ; puntero 
 
