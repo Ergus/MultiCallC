@@ -90,11 +90,18 @@ add_test(NAME Test_Java
   -cp ${_jarFile} main_j)
 
 
-# For Python executable
+# For Python executable using CTypes
 
-configure_file(${PROJECT_SOURCE_DIR}/main.py ${PROJECT_BINARY_DIR})
+configure_file(${PROJECT_SOURCE_DIR}/main_CTypes.py ${PROJECT_BINARY_DIR})
 
-add_test(NAME Test_Python COMMAND main.py)
+add_test(NAME Test_Python_CTypes COMMAND main_CTypes.py)
+
+# For python2 version using the wrapper in C side
+
+add_subdirectory(python_c_api)
+configure_file(${PROJECT_SOURCE_DIR}/main_CAPI.py ${PROJECT_BINARY_DIR})
+
+add_test(NAME Test_Python_C_API COMMAND main_CAPI.py)
 
 # For Julia executable
 
@@ -111,3 +118,4 @@ add_test(NAME Test_Ruby COMMAND main.rb)
 # For tests
 enable_testing()
 add_subdirectory(test)
+
