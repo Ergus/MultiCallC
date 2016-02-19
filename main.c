@@ -3,7 +3,7 @@
 int main(){
 
     int i;
-    
+  
     // First test
     for(i=0;i<5;i++){
         printf("%d\tx^2=%2d\tx^3=%2d\n", i, square(i), cube(i));

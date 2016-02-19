@@ -31,4 +31,6 @@ This is a simple project to show in how:
 
 * Interface Rust-C with unsafe and std functions, support for rust manually added in the CMake.
 
+* Intergace Go-C without the seudo-package "C" and compiling directly with gccgo. Maybe sometimes I will add other version.
+
 Author: Jimmy Aguilar Mena
