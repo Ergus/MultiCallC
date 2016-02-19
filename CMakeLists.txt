@@ -115,6 +115,32 @@ configure_file(${PROJECT_SOURCE_DIR}/main.rb ${PROJECT_BINARY_DIR})
 
 add_test(NAME Test_Ruby COMMAND main.rb)
 
+# Rust
+
+function(buildrs input output)
+  set(SOURCE_RS "${PROJECT_SOURCE_DIR}/${input}")
+  set(EXECUT_RS "${output}")
+
+  add_custom_command(OUTPUT ${EXECUT_RS}
+    COMMAND ${RUSTC} -C link-args=-Wl,-rpath,${PROJECT_BINARY_DIR} -L${PROJECT_BINARY_DIR} -lfun ${SOURCE_RS} -o ${EXECUT_RS}
+    DEPENDS ${PROJECT_BINARY_DIR}/libfun.so "${PROJECT_SOURCE_DIR}/main.rs"
+    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+    )
+
+  add_custom_target("${output}_rs" ALL
+    DEPENDS ${EXECUT_RS}
+    )
+endfunction()
+
+find_program(RUSTC "rustc")
+
+if (RUSTC)
+  buildrs(main.rs main_rs)
+
+endif()
+
+add_test(NAME Test_Rust COMMAND main_rs)
+
 # For tests
 enable_testing()
 add_subdirectory(test)

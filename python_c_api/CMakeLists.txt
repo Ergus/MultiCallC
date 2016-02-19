@@ -7,13 +7,16 @@ if (PYTHON)
 
   configure_file(${SETUP_PY_IN} ${SETUP_PY})
 
-  add_custom_target(
-    mymodule.so ALL
+  add_custom_command(
+    OUTPUT mymodule.so
     COMMAND ${PYTHON} setup.py build_ext --inplace
     DEPENDS ${PROJECT_BINARY_DIR}/libfun.so
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+    )  
+  
+  add_custom_target(
+    py_api_module ALL
+    DEPENDS mymodule.so
     )
   
-#  install(CODE "execute_process(COMMAND ${PYTHON} ${SETUP_PY} install)")
-
 endif()

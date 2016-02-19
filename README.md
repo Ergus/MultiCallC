@@ -29,4 +29,6 @@ This is a simple project to show in how:
 
 * Interface Julia-C with the native ccall function.
 
+* Interface Rust-C with unsafe and std functions, support for rust manually added in the CMake.
+
 Author: Jimmy Aguilar Mena
