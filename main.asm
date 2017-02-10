@@ -4,14 +4,14 @@ extern square
 extern cube
 extern print
 extern printstr
-        
-global main
 
 section .data
 format: db "%d",9,"x^2=%2d x^3=%2d", 10, 0
 mystring: db "my string"
         
 section .text
+    global main
+
 main:
     push rbp                 ; set up stack frame
     mov	rbp, rsp
