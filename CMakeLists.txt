@@ -15,22 +15,29 @@ add_library(fun SHARED ${PROJECT_SOURCE_DIR}/src/libfun.cc)
 
 # Nasm ###########################################
 
-set(CMAKE_C_SIZEOF_DATA_PTR 8)
-enable_language(ASM_NASM)
+find_program(NASM "nasm")
 
-set(CMAKE_ASM_NASM_COMPILER "nasm")
-set(CMAKE_ASM_NASM_LINKER "gcc")
+IF(NASM)
+  message(STATUS "NASM compiler found: " ${NASM})
+  set(CMAKE_C_SIZEOF_DATA_PTR 8)
+  set(ASM_DIALECT "_NASM")
 
-set(ASM_DIALECT "_NASM")
+  enable_language(ASM_NASM)
 
-set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <FLAGS> -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} -o <OBJECT> <SOURCE>")
-set(CMAKE_ASM_NASM_LINK_EXECUTABLE "${CMAKE_ASM_NASM_LINKER} <OBJECTS> -o <TARGET> <LINK_LIBRARIES> -Wl,-rpath,<CMAKE_CURRENT_BINARY_DIR>")
+  set(CMAKE_ASM_NASM_COMPILER ${NASM})
+  set(CMAKE_ASM_NASM_LINKER "gcc")
 
 
-add_executable(main_asm main.asm)
-target_link_libraries(main_asm fun)
+  set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <FLAGS> -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} -o <OBJECT> <SOURCE>")
+  set(CMAKE_ASM_NASM_LINK_EXECUTABLE "${CMAKE_ASM_NASM_LINKER} <OBJECTS> -o <TARGET> <LINK_LIBRARIES> -Wl,-rpath,<CMAKE_CURRENT_BINARY_DIR>")
 
-add_test(NAME Test_NASM COMMAND main_asm)
+  add_executable(main_asm main.asm)
+  target_link_libraries(main_asm fun)
+
+  add_test(NAME Test_NASM COMMAND main_asm)
+ELSE(NASM)
+  message(WARNING "NASM compiler NOT found: " ${NASM})
+ENDIF(NASM)
 
 # C main_c #######################################
 
@@ -40,10 +47,13 @@ target_link_libraries(main_c fun)
 add_test(NAME Test_C COMMAND main_c)
 
 # C++ 11 main_c11 ################################
-
-set_source_files_properties(main_c11.cc PROPERTIES COMPILE_FLAGS -std=c++11)
+# Both next lines work to enable c++11
+#ADD_COMPILE_OPTIONS(-std=c++11)  
+#set_source_files_properties(main_c11.cc PROPERTIES COMPILE_FLAGS -std=c++11)
 
 add_executable(main_c11 main_c11.cc)
+target_compile_features(main_c11 PRIVATE cxx_constexpr)  # This finds the options and sets -std=c++11 if needed
+
 target_link_libraries(main_c11 fun)
 
 add_test(NAME Test_C++11 COMMAND main_c)
@@ -65,44 +75,68 @@ add_test(NAME Test_Fortran COMMAND main_f)
 
 # Java main_j ####################################
 
-set(JAVA_HOME "/usr/lib/jvm/java-8-openjdk")
+FIND_PATH(JAVA_HOME
+  jre/bin/java
+  HINTS /usr/lib/jvm/java-8-openjdk /usr/lib/jvm/java-8-openjdk-amd64 /usr/lib/jvm/default
+  NO_DEFAULT_PATH
+  )
 
-find_package(Java REQUIRED)
-include(UseJava)
+if(NOT JAVA_HOME STREQUAL "JAVA_HOME-NOTFOUND")
+  include(UseJava)
+  find_package(Java MODULE)
+  find_package(JNI MODULE)
 
-find_package(JNI)
+  if(Java_FOUND AND JNI_FOUND)
+    set(jversion ${Java_VERSION_MAJOR}.${Java_VERSION_MINOR})
 
-set(CMAKE_JAVA_COMPILE_FLAGS "-source" "1.8" "-target" "1.8")
+    set(CMAKE_JAVA_COMPILE_FLAGS "-source" ${jversion} "-target" ${jversion})
 
-include_directories(${JAVA_INCLUDE_PATH} ${JAVA_INCLUDE_PATH2} ${PROJECT_SOURCE_DIR}/include)
+    include_directories(${JAVA_INCLUDE_PATH} ${JAVA_INCLUDE_PATH2} ${PROJECT_SOURCE_DIR}/include)
 
-add_library(funjava MODULE ${PROJECT_SOURCE_DIR}/src/main_j.cc)
+    add_library(funjava MODULE ${PROJECT_SOURCE_DIR}/src/main_j.cc)
 
-target_link_libraries(funjava ${JNI_LIBRARIES})
-target_link_libraries(funjava fun)
+    target_link_libraries(funjava fun ${JNI_LIBRARIES})
 
-add_jar(main_j main_j.java)
+    add_jar(main_j main_j.java)
+    
+    get_target_property(_jarFile main_j JAR_FILE)
 
-get_target_property(_jarFile main_j JAR_FILE)
-get_target_property(_classDir main_j CLASSDIR)
+    add_test(NAME Test_Java
+      COMMAND ${Java_JAVA_EXECUTABLE}
+      -Djava.library.path=${CMAKE_CURRENT_BINARY_DIR}
+      -cp ${_jarFile} main_j)
+    
+  endif(Java_FOUND AND JNI_FOUND)
+  
+else()
+  message(STATUS "JAVA_HOME=" ${JAVA_HOME})
+endif()
 
-add_test(NAME Test_Java
-  COMMAND ${Java_JAVA_EXECUTABLE}
-  -Djava.library.path=${CMAKE_CURRENT_BINARY_DIR}
-  -cp ${_jarFile} main_j)
+
 
 # For Python executable using CTypes #############
+FIND_PACKAGE(PythonInterp MODULE)
 
-configure_file(${PROJECT_SOURCE_DIR}/main_CTypes.py ${PROJECT_BINARY_DIR})
-
-add_test(NAME Test_Python_CTypes COMMAND main_CTypes.py)
-
+IF(PYTHONINTERP_FOUND)
+  configure_file(${PROJECT_SOURCE_DIR}/main_CTypes.py ${PROJECT_BINARY_DIR})
+  add_test(NAME Test_Python_CTypes COMMAND main_CTypes.py)  
+ENDIF(PYTHONINTERP_FOUND)
+  
 # For python2 using the wrapper in C side ########
 
-add_subdirectory(python_c_api)
-configure_file(${PROJECT_SOURCE_DIR}/main_CAPI.py ${PROJECT_BINARY_DIR})
+find_package(PythonLibs MODULE)
+ 
+IF(PYTHONLIBS_FOUND)
+   include_directories(${PYTHON_INCLUDE_DIRS})
+   
+   add_library(mymodule MODULE ${PROJECT_SOURCE_DIR}/src/c-module.c) 
+   set_target_properties(mymodule PROPERTIES PREFIX "")
+   target_link_libraries(mymodule fun ${PYTHON_LIBRARIES})
 
-add_test(NAME Test_Python_C_API COMMAND main_CAPI.py)
+   configure_file(${PROJECT_SOURCE_DIR}/main_CAPI.py ${PROJECT_BINARY_DIR})
+   add_test(NAME Test_Python_C_API COMMAND main_CAPI.py)
+   
+ENDIF(PYTHONLIBS_FOUND)
 
 # For Julia executable ###########################
 
@@ -149,14 +183,15 @@ function(buildgo input output)
   set(EXECUT_GO "${output}")
 
   add_custom_command(OUTPUT ${EXECUT_GO}
-    COMMAND ${GCCGO} ${SOURCE_GO} -L${PROJECT_BINARY_DIR} -lfun -o ${EXECUT_GO} -Wl,-rpath,${PROJECT_BINARY_DIR}
-    DEPENDS ${PROJECT_BINARY_DIR}/libfun.so "${PROJECT_SOURCE_DIR}/main.go"
+    COMMAND ${GCCGO} ${SOURCE_GO} -o ${EXECUT_GO} -L${PROJECT_BINARY_DIR} -lfun -Wl,-rpath,${PROJECT_BINARY_DIR}
+    DEPENDS fun "${PROJECT_SOURCE_DIR}/main.go"
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
     )
-
+  
   add_custom_target("${output}_go" ALL
     DEPENDS ${EXECUT_GO}
     )
+
 endfunction()
 
 if(GCCGO)

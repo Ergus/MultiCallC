@@ -71,7 +71,7 @@ static struct PyModuleDef my_module_def ={
     MyMethods
     };
 
-PyMODINIT_FUNC PyInit_my_module(void){
+PyMODINIT_FUNC PyInit_mymodule(void){
     return PyModule_Create(&my_module_def);
     }
 
