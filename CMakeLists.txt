@@ -115,6 +115,7 @@ endif()
 
 
 # For Python executable using CTypes #############
+set(Python_ADDITIONAL_VERSIONS 3.7 3.6 3.5 3.4 3.3 3.2 3.1)
 FIND_PACKAGE(PythonInterp MODULE)
 
 IF(PYTHONINTERP_FOUND)
@@ -128,7 +129,7 @@ find_package(PythonLibs MODULE)
  
 IF(PYTHONLIBS_FOUND)
    include_directories(${PYTHON_INCLUDE_DIRS})
-   
+
    add_library(mymodule MODULE ${PROJECT_SOURCE_DIR}/src/c-module.c) 
    set_target_properties(mymodule PROPERTIES PREFIX "")
    target_link_libraries(mymodule fun ${PYTHON_LIBRARIES})
