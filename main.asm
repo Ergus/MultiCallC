@@ -22,12 +22,12 @@ main:
     .L1:
         ; call square
         mov rdi, r12
-        call square
+        call square wrt ..plt
         mov r13, rax
         
         ; call cube
         mov rdi, r12
-        call cube
+        call cube wrt ..plt
 
         ; printf
         mov rdi, format         ; address of format string
@@ -35,7 +35,7 @@ main:
         mov rdx, r13            ; valor r13 del cuadrado
         mov rcx, rax            ; valor del cubo
 
-        call printf
+        call printf wrt ..plt
         
         inc r12
         dec rbx                 ; keep counting
@@ -56,11 +56,11 @@ main:
 
     mov rsi, rsp                ; puntero 
 
-    call print
+    call print wrt ..plt
 
     ; Third Part
     mov rdi, mystring
-    call printstr
+    call printstr wrt ..plt
         
     mov rsp, rbp                ; 
     pop rbp                     ; restore stack
