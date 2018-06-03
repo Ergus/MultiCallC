@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <list>
+#include <numeric>
 
 
 using namespace std;
