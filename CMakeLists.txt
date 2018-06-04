@@ -159,7 +159,7 @@ function(buildrs input output)
 
   add_custom_command(OUTPUT ${EXECUT_RS}
     COMMAND ${RUSTC} -C link-args=-Wl,-rpath,${PROJECT_BINARY_DIR} -L${PROJECT_BINARY_DIR} -lfun ${SOURCE_RS} -o ${EXECUT_RS}
-    DEPENDS ${PROJECT_BINARY_DIR}/libfun.so "${PROJECT_SOURCE_DIR}/main.rs"
+    DEPENDS fun "${PROJECT_SOURCE_DIR}/main.rs"
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
     )
 

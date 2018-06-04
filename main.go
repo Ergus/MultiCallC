@@ -10,15 +10,15 @@ func print_c(size int, arr *float64) int __asm__ ("print");
 func printstr(arr *byte) int __asm__ ("printstr");
 
 func main() {
-	
+
 	// First test
-	
+
 	for i := 0; i < 5; i++ {
 		fmt.Printf("%d\tx^2=%2d\tx^3=%2d\n",
 			i,square(i), cube(i))
 	}
-	
-	// Secound test, pass array	
+
+	// Secound test, pass array
 	const size = 6
 	arr := make([]float64,size)
 
@@ -29,6 +29,4 @@ func main() {
 	str := []byte("my string")
 
 	printstr(&str[0])
-	
-	
 }

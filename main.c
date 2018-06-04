@@ -1,25 +1,25 @@
 #include "libfun.h"
 
-int main(){
+int main()
+{
+	int i;
 
-    int i;
-  
-    // First test
-    for(i=0;i<5;i++){
-        printf("%d\tx^2=%2d\tx^3=%2d\n", i, square(i), cube(i));
-        }
+	// First test
+	for (i = 0; i < 5; i++)
+		printf("%d\tx^2=%2d\tx^3=%2d\n", i, square(i), cube(i));
 
-    // Secound test, pass array
-    const int size=6;
-    double arr[size];
-    
-    for(i=0;i<size;i++) arr[i]=(double)(i+1);
-    
-    print(size,arr);
+	// Secound test, pass array
+	const int size = 6;
+	double arr[size];
 
-    // Third test
-    char str[]="my string";
-    printstr(str);
-    
-    return 0;
-    }
+	for (i = 0; i < size; i++)
+		arr[i]=(double)(i+1);
+
+	print(size, arr);
+
+	// Third test
+	char str[] = "my string";
+	printstr(str);
+
+	return 0;
+}
