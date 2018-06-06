@@ -201,6 +201,18 @@ else (GCCGO_COMPILER)
   message(STATUS "GCCGO compiler not found")
 endif (GCCGO_COMPILER)
 
+# Lua ############################################
+
+find_package(Lua MODULE)
+
+if (LUA_FOUND)
+  include_directories(${LUA_INCLUDE_DIR})
+  add_library(modulelua SHARED ${PROJECT_SOURCE_DIR}/src/c-lua.c)
+  target_link_libraries(modulelua fun ${LUA_LIBRARIES})
+
+  configure_file(${PROJECT_SOURCE_DIR}/main.lua ${PROJECT_BINARY_DIR})
+endif (LUA_FOUND)
+
 # For tests ######################################
 
 enable_testing()
