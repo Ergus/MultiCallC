@@ -30,10 +30,10 @@ static PyObject *my_print(PyObject *self, PyObject *args)
 	PyObject *pyarray, *seq;
 	int size;
 
-	if (!PyArg_ParseTuple(args, "iO", &size,&pyarray))
+	if (!PyArg_ParseTuple(args, "iO", &size, &pyarray))
 		return NULL;
 
-	double *array=(double *) malloc(size * sizeof(double));
+	double *array = (double *) malloc(size * sizeof(double));
 
 	seq = PySequence_Fast(pyarray, "Expected a sequence");
 	for(int i = 0; i < size; i++) {
@@ -45,7 +45,7 @@ static PyObject *my_print(PyObject *self, PyObject *args)
 	return Py_BuildValue("");
 }
 
-static PyObject* my_printstr(PyObject* self, PyObject* args)
+static PyObject* my_printstr(PyObject *self, PyObject *args)
 {
 	char *mystring;
 
