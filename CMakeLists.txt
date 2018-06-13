@@ -121,9 +121,9 @@ find_package(PythonLibs MODULE)
 IF(PYTHONLIBS_FOUND)
   include_directories(${PYTHON_INCLUDE_DIRS})
 
-  add_library(mymodule MODULE ${PROJECT_SOURCE_DIR}/src/c-module.c)
-  set_target_properties(mymodule PROPERTIES PREFIX "")
-  target_link_libraries(mymodule fun ${PYTHON_LIBRARIES})
+  add_library(modulepython MODULE ${PROJECT_SOURCE_DIR}/src/c-python.c)
+  set_target_properties(modulepython PROPERTIES PREFIX "")
+  target_link_libraries(modulepython fun ${PYTHON_LIBRARIES})
 
   configure_file(${PROJECT_SOURCE_DIR}/main_CAPI.py ${PROJECT_BINARY_DIR})
   add_test(NAME Test_Python_C_API COMMAND main_CAPI.py)

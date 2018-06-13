@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import mymodule as my
+import modulepython as my
 
 for i in range(5):
     print("%d\tx^2=%2d\tx^3=%2d" %  \

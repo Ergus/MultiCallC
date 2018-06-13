@@ -68,13 +68,13 @@ static PyMethodDef MyMethods[] = {
 
 static struct PyModuleDef my_module_def = {
 	PyModuleDef_HEAD_INIT,
-	"my_module",                          /* name of module */
+	"modulepython",                       /* name of module */
 	"Modulo de prueba creado por mi",     /* module documentation, may be NULL */
 	-1,          /* size of per-interpreter state of the module, or -1 if the module keeps state in global variables. */
 	MyMethods
 };
 
-PyMODINIT_FUNC PyInit_mymodule(void)
+PyMODINIT_FUNC PyInit_modulepython(void)
 {
 	return PyModule_Create(&my_module_def);
 }
