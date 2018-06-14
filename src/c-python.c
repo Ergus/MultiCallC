@@ -36,13 +36,11 @@ static PyObject *my_print(PyObject *self, PyObject *args)
 	double *array = (double *) malloc(size * sizeof(double));
 
 	seq = PySequence_Fast(pyarray, "Expected a sequence");
-	for(int i = 0; i < size; i++) {
+	for(int i = 0; i < size; ++i)
 		array[i] = PyFloat_AsDouble(PySequence_GetItem(seq, i));
-	}
 
 	print(size, array);
 	free(array);
-	return Py_BuildValue("");
 }
 
 static PyObject* my_printstr(PyObject *self, PyObject *args)
@@ -53,8 +51,6 @@ static PyObject* my_printstr(PyObject *self, PyObject *args)
 		return NULL;
 
 	printstr(mystring);
-
-	return Py_BuildValue("");
 }
 
 //  define functions in module

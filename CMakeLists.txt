@@ -140,16 +140,21 @@ else(JULIA_EXECUTABLE)
   message(STATUS "Julia executable not found!!")
 endif (JULIA_EXECUTABLE)
 
-
 # For Ruby executable ############################
 
 find_package(Ruby MODULE)
 
 if (RUBY_FOUND)
-  configure_file(${PROJECT_SOURCE_DIR}/main.rb ${PROJECT_BINARY_DIR})
-  add_test(NAME Test_Ruby COMMAND ${RUBY_EXECUTABLE} main.rb)
-endif (RUBY_FOUND)
+  configure_file(${PROJECT_SOURCE_DIR}/main_ffi.rb ${PROJECT_BINARY_DIR})
+  add_test(NAME Test_Ruby_ffi COMMAND ${RUBY_EXECUTABLE} main_ffi.rb)
 
+  include_directories(${RUBY_INCLUDE_DIRS})
+  add_library(moduleruby MODULE ${PROJECT_SOURCE_DIR}/src/c-ruby.c)
+  set_target_properties(moduleruby PROPERTIES PREFIX "")
+  target_link_libraries(moduleruby fun ${RUBY_LIBRARIES})
+  configure_file(${PROJECT_SOURCE_DIR}/main_CAPI.rb ${PROJECT_BINARY_DIR})
+  add_test(NAME Test_Ruby_C_API COMMAND ${RUBY_EXECUTABLE} main_CAPI.rb)
+endif (RUBY_FOUND)
 
 # Rust ###########################################
 
