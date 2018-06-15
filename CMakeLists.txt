@@ -218,6 +218,21 @@ if (LUA_FOUND)
   configure_file(${PROJECT_SOURCE_DIR}/main.lua ${PROJECT_BINARY_DIR})
 endif (LUA_FOUND)
 
+# Scheme-guile ###################################
+
+find_program(GUILE guile)
+find_library(LIBGUILE libguile.so)
+
+if (GUILE AND LIBGUILE)
+  add_library(modulescheme SHARED ${PROJECT_SOURCE_DIR}/src/c-scheme.c)
+  target_link_libraries(modulescheme fun ${LIBGUILE})
+
+  configure_file(${PROJECT_SOURCE_DIR}/main.scm ${PROJECT_BINARY_DIR})
+else ()
+  message(STATUS "Guile not found")
+endif()
+
+
 # For tests ######################################
 
 enable_testing()
