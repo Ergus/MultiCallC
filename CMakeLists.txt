@@ -88,9 +88,9 @@ if (Java_FOUND AND JNI_FOUND)
 
   include_directories(${JAVA_INCLUDE_PATH} ${JAVA_INCLUDE_PATH2} ${PROJECT_SOURCE_DIR}/include)
 
-  add_library(funjava MODULE ${PROJECT_SOURCE_DIR}/src/main_j.cc)
+  add_library(modulejava MODULE ${PROJECT_SOURCE_DIR}/src/c-java.cc)
 
-  target_link_libraries(funjava fun ${JNI_LIBRARIES})
+  target_link_libraries(modulejava fun ${JNI_LIBRARIES})
 
   add_jar(main_j main_j.java)
 
