@@ -7,11 +7,13 @@
 // Define functions wrapper
 static PyObject *my_square(PyObject *self, PyObject *args)
 {
-	int value, answer;
-	if (!PyArg_ParseTuple(args, "i", &value))
+	int value = PyLong_AsLong(args);
+
+	if (value == -1 && PyErr_Occurred())
 		return NULL;
 
-	answer = square(value);
+	int answer = square(value);
+
 	return Py_BuildValue("i", answer);
 }
 
@@ -57,7 +59,7 @@ static PyObject* my_printstr(PyObject *self, PyObject *args)
 
 //  define functions in module
 static PyMethodDef MyMethods[] = {
-	{"square", my_square, METH_VARARGS, "evaluate the cube function"},
+	{"square", my_square, METH_O, "evaluate the cube function"},
 	{"cube", my_cube, METH_VARARGS, "evaluate the cube function"},
 	{"print", my_print, METH_VARARGS, "print a double array"},
 	{"printstr", my_printstr, METH_VARARGS, "print a double array"},
