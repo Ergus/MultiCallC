@@ -33,6 +33,8 @@ This is a simple project to show in how:
 
 * Intergace Go-C without the seudo-package "C" and compiling directly with gccgo. Maybe sometimes I will add other version.
 
-* Interface Lua-C using the Lua C API and compiling with the intrinsic cmake's FindLua. In the script a custom *printf* is defined to get the exact same output as the other benchmarks..
+* Interface Lua-C using the Lua C API and compiling with the intrinsic cmake's FindLua. In the script a custom *printf* is defined to get the exact same output as the other benchmarks.
+
+* Interface Scheme-C (Guile-C) with the Guile C api. There are some small issues with the memory allocation and release.
 
 Author: Jimmy Aguilar Mena

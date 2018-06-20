@@ -41,6 +41,7 @@ static PyObject *my_print(PyObject *self, PyObject *args)
 
 	print(size, array);
 	free(array);
+	Py_RETURN_NONE;
 }
 
 static PyObject* my_printstr(PyObject *self, PyObject *args)
@@ -51,6 +52,7 @@ static PyObject* my_printstr(PyObject *self, PyObject *args)
 		return NULL;
 
 	printstr(mystring);
+	Py_RETURN_NONE;
 }
 
 //  define functions in module
