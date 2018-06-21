@@ -37,4 +37,6 @@ This is a simple project to show in how:
 
 * Interface Scheme-C (Guile-C) with the Guile C api. There are some small issues with the memory allocation and release.
 
+* Interface Pascal-C (with free pascal compiler). There are some small issues with the printf call from pascal in C.
+
 Author: Jimmy Aguilar Mena

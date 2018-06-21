@@ -237,6 +237,34 @@ else ()
   message(STATUS "Guile not found: guile=${GUILE} libguile=${LIBGUILE}")
 endif()
 
+# Pascal #########################################
+
+find_program(FPC_COMPILER fpc)
+
+if (FPC_COMPILER)
+  message(STATUS "Found FPC compiler: ${FPC_COMPILER}")
+
+  function (buildfpc input output)
+	set(SOURCE_FPC "${PROJECT_SOURCE_DIR}/${input}")
+
+	add_custom_command(OUTPUT ${output}
+      COMMAND ${FPC_COMPILER} ${SOURCE_FPC} -Fl${PROJECT_BINARY_DIR}
+										  -FE${PROJECT_BINARY_DIR}
+										  -k-rpath
+										  -k${PROJECT_BINARY_DIR}
+										  -o${output}
+      DEPENDS fun ${SOURCE_FPC}
+      WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+      )
+
+	add_custom_target("${output}_pas" ALL DEPENDS ${output})
+  endfunction ()
+
+  buildfpc(main.pas main_pascal)
+  add_test(NAME Test_Pascal COMMAND main_pascal)
+else (FPC_COMPILER)
+  message(STATUS "Pascal compiler fpc not found")
+endif (FPC_COMPILER)
 
 # For tests ######################################
 
