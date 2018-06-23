@@ -283,8 +283,37 @@ else (FPC_COMPILER)
   message(STATUS "Pascal compiler fpc not found")
 endif (FPC_COMPILER)
 
-# For tests ######################################
+# Ada ###########################################
 
+find_program(GNAT_BIND gnatbind)
+find_program(GNAT_LINK gnatlink)
+
+if (GNAT_BIND AND GNAT_LINK)
+  message(STATUS "Found ADA: ${GNAT_BIND} and ${GNAT_BIND}")
+
+  function (buildada input output)
+	set(SOURCE_ADA "${PROJECT_SOURCE_DIR}/${input}")
+	set(ALI "${output}.ali")
+
+	add_custom_command(OUTPUT ${output}
+      COMMAND gcc -c ${SOURCE_ADA}
+	  COMMAND ${GNAT_BIND} -x ${ALI}
+	  COMMAND ${GNAT_LINK} ${ALI} -o ${output} --LINK=gcc -L${PROJECT_BINARY_DIR} -lfun -Wl,-rpath,${PROJECT_BINARY_DIR}
+      DEPENDS fun ${SOURCE_ADA}
+      WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+      )
+
+	add_custom_target("${output}_ada" ALL DEPENDS ${output})
+  endfunction ()
+
+  buildada(main_ada.adb main_ada)
+  add_test(NAME Test_Ada COMMAND main_ada)
+
+else ()
+  message(STATUS "GNATLINK and GNATBIND not found")
+endif()
+
+# For tests ######################################
 enable_testing()
 add_subdirectory(test)
 

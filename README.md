@@ -39,4 +39,6 @@ This is a simple project to show in how:
 
 * Interface Pascal-C (with free pascal compiler). There are some small issues with the printf call from pascal in C.
 
+* Interface Ada-C. I don't know how to print a **\t** in Ada.
+
 Author: Jimmy Aguilar Mena
