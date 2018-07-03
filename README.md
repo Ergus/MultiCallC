@@ -43,4 +43,6 @@ This is a simple project to show in how:
 
 * Interface Tcl-C. I use a list instead of a Tcl array because it is the structure that better match C arrays (are indexed and keeps the order.) Because Tcl Arrays are hash tables.
 
+* Interface Ocaml-C. An extra character is required in the printf in the .ml to avoid buffer issues. The example works with the bytecode and the native compiler, but the compile commands are different. There is no way to avoid the extra files in the sources for now. So I added them in the .gitignore.
+
 Author: Jimmy Aguilar Mena

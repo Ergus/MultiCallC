@@ -1,3 +1,7 @@
 build
 .mypy*
 *~
+*.cmi
+*.cmx
+*.cmo
+*.o

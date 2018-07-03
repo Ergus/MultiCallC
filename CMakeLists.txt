@@ -333,6 +333,43 @@ else ()
   message(STATUS "tcl library or header not found")
 endif ()
 
+# Ocaml ##########################################
+
+find_program(OCAMLC ocamlopt)
+
+if (OCAMLC)
+  message(STATUS "Found ocaml compiler: ${OCAMLC}")
+
+  execute_process(COMMAND ${OCAMLC} -where
+	OUTPUT_VARIABLE OCAML_INCLUDE_DIR
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+  add_library(moduleocaml SHARED ${PROJECT_SOURCE_DIR}/src/c-ocaml.c)
+  target_include_directories(moduleocaml PRIVATE ${OCAML_INCLUDE_DIR})
+  #set_target_properties(moduletcl PROPERTIES PREFIX "")
+  target_link_libraries(moduleocaml fun)
+
+  function (buildocaml input output)
+	set(SOURCE_OCAML "${PROJECT_SOURCE_DIR}/${input}")
+
+	add_custom_command(OUTPUT ${output}
+	  #COMMAND ${OCAMLC} ${SOURCE_OCAML} -dllpath ${PROJECT_BINARY_DIR} -dllib libmoduleocaml -o ${output} -I ${PROJECT_BINARY_DIR}
+	  COMMAND ${OCAMLC} ${SOURCE_OCAML} -cclib "-L${PROJECT_BINARY_DIR} -lmoduleocaml -Wl,-rpath,${PROJECT_BINARY_DIR}" -o ${output} -I ${PROJECT_BINARY_DIR}
+      DEPENDS fun ${SOURCE_OCAML} moduleocaml
+      WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+      )
+
+	add_custom_target("${output}_ocaml" ALL DEPENDS ${output})
+  endfunction ()
+
+  buildocaml(main.ml main_ocaml)
+  add_test(NAME Test_ocaml COMMAND main_ocaml)
+
+else ()
+  message(STATUS "ocaml compiler or header not found")
+endif ()
+
+
 # For tests ######################################
 enable_testing()
 add_subdirectory(test)
