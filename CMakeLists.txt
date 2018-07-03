@@ -314,6 +314,24 @@ else ()
   message(STATUS "GNATLINK and GNATBIND not found")
 endif()
 
+# Tcl ############################################
+
+find_path(TCL_INCLUDE_DIR tcl.h)
+find_library(LIBTCL libtcl.so)
+
+if (TCL_INCLUDE_DIR AND LIBTCL)
+  message(STATUS "Found header and libraries in: ${TCL_INCLUDE_DIR} and ${LIBTCL}")
+
+  add_library(moduletcl SHARED ${PROJECT_SOURCE_DIR}/src/c-tcl.c)
+  target_include_directories(moduletcl PRIVATE ${TCL_INCLUDE_DIR})
+  set_target_properties(moduletcl PROPERTIES PREFIX "")
+  target_link_libraries(moduletcl fun ${LIBTCL})
+
+  configure_file(${PROJECT_SOURCE_DIR}/main.tcl ${PROJECT_BINARY_DIR})
+  add_test(NAME Test_Tcl COMMAND main.tcl)
+else ()
+  message(STATUS "tcl library or header not found")
+endif ()
 
 # For tests ######################################
 enable_testing()

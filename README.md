@@ -41,4 +41,6 @@ This is a simple project to show in how:
 
 * Interface Ada-C. I don't know how to print a **\t** in Ada.
 
+* Interface Tcl-C. In the array print it receives the keys ordered because it is easier. This is potentially wrong. But it works for now.
+
 Author: Jimmy Aguilar Mena
