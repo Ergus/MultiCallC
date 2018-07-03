@@ -103,9 +103,10 @@ if (Java_FOUND AND JNI_FOUND)
 
   set(CMAKE_JAVA_COMPILE_FLAGS "-source" ${jversion} "-target" ${jversion})
 
-  include_directories(${JAVA_INCLUDE_PATH} ${JAVA_INCLUDE_PATH2} ${PROJECT_SOURCE_DIR}/include)
-
   add_library(modulejava MODULE ${PROJECT_SOURCE_DIR}/src/c-java.cc)
+
+  target_include_directories(modulejava PRIVATE ${JAVA_INCLUDE_PATH}
+		${JAVA_INCLUDE_PATH2} ${PROJECT_SOURCE_DIR}/include)
 
   target_link_libraries(modulejava fun ${JNI_LIBRARIES})
 
@@ -136,11 +137,10 @@ ENDIF(PYTHONINTERP_FOUND)
 find_package(PythonLibs MODULE)
 
 IF(PYTHONLIBS_FOUND)
-  include_directories(${PYTHON_INCLUDE_DIRS})
-
   add_library(modulepython MODULE ${PROJECT_SOURCE_DIR}/src/c-python.c)
   set_target_properties(modulepython PROPERTIES PREFIX "")
   target_link_libraries(modulepython fun ${PYTHON_LIBRARIES})
+  target_include_directories(modulepython PRIVATE ${PYTHON_INCLUDE_DIRS})
 
   configure_file(${PROJECT_SOURCE_DIR}/main_CAPI.py ${PROJECT_BINARY_DIR})
   add_test(NAME Test_Python_C_API COMMAND main_CAPI.py)
@@ -165,8 +165,8 @@ if (RUBY_FOUND)
   configure_file(${PROJECT_SOURCE_DIR}/main_ffi.rb ${PROJECT_BINARY_DIR})
   add_test(NAME Test_Ruby_ffi COMMAND ${RUBY_EXECUTABLE} main_ffi.rb)
 
-  include_directories(${RUBY_INCLUDE_DIRS})
   add_library(moduleruby MODULE ${PROJECT_SOURCE_DIR}/src/c-ruby.c)
+  target_include_directories(moduleruby PRIVATE ${RUBY_INCLUDE_DIRS})
   set_target_properties(moduleruby PROPERTIES PREFIX "")
   target_link_libraries(moduleruby fun ${RUBY_LIBRARIES})
   configure_file(${PROJECT_SOURCE_DIR}/main_CAPI.rb ${PROJECT_BINARY_DIR})
@@ -228,8 +228,8 @@ endif (GCCGO_COMPILER)
 find_package(Lua MODULE)
 
 if (LUA_FOUND)
-  include_directories(${LUA_INCLUDE_DIR})
   add_library(modulelua SHARED ${PROJECT_SOURCE_DIR}/src/c-lua.c)
+  target_include_directories(modulelua PRIVATE ${LUA_INCLUDE_DIR})
   target_link_libraries(modulelua fun ${LUA_LIBRARIES})
 
   configure_file(${PROJECT_SOURCE_DIR}/main.lua ${PROJECT_BINARY_DIR})
@@ -244,8 +244,9 @@ find_library(LIBGUILE libguile-2.2.so)
 
 if (GUILE AND LIBGUILE AND GUILE_INCLUDE_DIR)
   message(STATUS "Found Guile: ${GUILE}")
-  include_directories(${GUILE_INCLUDE_DIR})
+
   add_library(modulescheme SHARED ${PROJECT_SOURCE_DIR}/src/c-scheme.c)
+  target_include_directories(modulescheme PRIVATE ${GUILE_INCLUDE_DIR})
   target_link_libraries(modulescheme fun ${LIBGUILE})
 
   configure_file(${PROJECT_SOURCE_DIR}/main.scm ${PROJECT_BINARY_DIR})
@@ -312,6 +313,7 @@ if (GNAT_BIND AND GNAT_LINK)
 else ()
   message(STATUS "GNATLINK and GNATBIND not found")
 endif()
+
 
 # For tests ######################################
 enable_testing()
