@@ -41,6 +41,6 @@ This is a simple project to show in how:
 
 * Interface Ada-C. I don't know how to print a **\t** in Ada.
 
-* Interface Tcl-C. In the array print it receives the keys ordered because it is easier. This is potentially wrong. But it works for now.
+* Interface Tcl-C. I use a list instead of a Tcl array because it is the structure that better match C arrays (are indexed and keeps the order.) Because Tcl Arrays are hash tables.
 
 Author: Jimmy Aguilar Mena

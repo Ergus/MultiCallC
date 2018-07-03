@@ -28,11 +28,12 @@ for {set i 0} {$i < 5} {incr i} {
 
 # Prints an array (the keys)
 set size 6
+
 for {set i 1} {$i <= $size} {incr i} {
-	set arr($i) $i
+	lappend arr $i
 }
 
-print $size [lsort [array names arr]]
+print $size $arr
 
 
 # String
