@@ -346,7 +346,6 @@ if (OCAMLC)
 
   add_library(moduleocaml SHARED ${PROJECT_SOURCE_DIR}/src/c-ocaml.c)
   target_include_directories(moduleocaml PRIVATE ${OCAML_INCLUDE_DIR})
-  #set_target_properties(moduletcl PROPERTIES PREFIX "")
   target_link_libraries(moduleocaml fun)
 
   function (buildocaml input output)
@@ -369,6 +368,26 @@ else ()
   message(STATUS "ocaml compiler or header not found")
 endif ()
 
+# Bash ###########################################
+
+find_path(BASH_INCLUDE_DIR builtins.h PATH_SUFFIXES bash)
+
+if (BASH_INCLUDE_DIR)
+  message(STATUS "Found bash headers: ${BASH_INCLUDE_DIR}")
+
+  set(BASH_INCLUDES ${BASH_INCLUDE_DIR} ${BASH_INCLUDE_DIR}/builtins ${BASH_INCLUDE_DIR}/include)
+
+  add_library(modulebash SHARED ${PROJECT_SOURCE_DIR}/src/c-bash.c)
+  target_include_directories(modulebash PRIVATE ${BASH_INCLUDES})
+  #set_target_properties(modulebash PROPERTIES PREFIX "")
+  target_link_libraries(modulebash fun)
+
+  configure_file(${PROJECT_SOURCE_DIR}/main.sh ${PROJECT_BINARY_DIR} COPYONLY)
+  add_test(NAME Test_Bash COMMAND main.sh)
+
+else ()
+  message(STATUS "no bash headers found")
+endif()
 
 # For tests ######################################
 enable_testing()

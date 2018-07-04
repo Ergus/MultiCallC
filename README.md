@@ -45,4 +45,6 @@ This is a simple project to show in how:
 
 * Interface Ocaml-C. An extra character is required in the printf in the .ml to avoid buffer issues. The example works with the bytecode and the native compiler, but the compile commands are different. There is no way to avoid the extra files in the sources for now. So I added them in the .gitignore.
 
+* Interface Bash-C using bash builtins. This bash functionality is surprisingly undocumented in spite of it is very simple to use. 
+
 Author: Jimmy Aguilar Mena
