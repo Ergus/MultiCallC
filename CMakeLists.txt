@@ -382,8 +382,8 @@ if (BASH_INCLUDE_DIR)
   #set_target_properties(modulebash PROPERTIES PREFIX "")
   target_link_libraries(modulebash fun)
 
-  configure_file(${PROJECT_SOURCE_DIR}/main.sh ${PROJECT_BINARY_DIR} COPYONLY)
-  add_test(NAME Test_Bash COMMAND main.sh)
+  configure_file(${PROJECT_SOURCE_DIR}/main.bash ${PROJECT_BINARY_DIR} COPYONLY)
+  add_test(NAME Test_Bash COMMAND main.bash)
 
 else ()
   message(STATUS "no bash headers found")
