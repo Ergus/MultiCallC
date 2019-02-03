@@ -73,7 +73,7 @@ static int my_print(ClientData cdata, Tcl_Interp *interp,
 		return TCL_ERROR;
 
 	int Largc, code;
-	char **Largv;
+	const char **Largv;
 	char *string = Tcl_GetString(objv[2]);
 
 	code = Tcl_SplitList(interp, string, &Largc, &Largv);
