@@ -47,4 +47,6 @@ This is a simple project to show in how:
 
 * Interface Bash-C using bash builtins. This bash functionality is surprisingly undocumented in spite of it is very simple to use. 
 
+* Interface Elisp-C using the emacs module from Emacs-25. This includes the emacs-modules.h header because it is not available in all the systems, even when Emacs supports it. The interface is made barely simple and for real applications the high level wrapper is most recommended for error prevention.
+
 Author: Jimmy Aguilar Mena

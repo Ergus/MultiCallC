@@ -389,6 +389,33 @@ else ()
   message(STATUS "no bash headers found")
 endif()
 
+# Elisp ###########################################
+
+find_program(EMACS emacs)
+
+if (EMACS)
+  execute_process(COMMAND ${EMACS} "--version" OUTPUT_VARIABLE OUTTEST ERROR_VARIABLE OUTTEST)
+
+  string(FIND ${OUTTEST} "\n" SLEN)
+  string(SUBSTRING ${OUTTEST} 0 ${SLEN} OUTTEST)
+
+  string(REGEX REPLACE "GNU Emacs ([0-9]+\\.[0-9]) *" "\\1" EMACS_VERSION ${OUTTEST})
+
+  if (${EMACS_VERSION} GREATER 26)
+	message(STATUS "Found Emacs Version: " ${EMACS_VERSION})
+	add_library(moduleelisp SHARED ${PROJECT_SOURCE_DIR}/src/c-elisp.c)
+	set_target_properties(moduleelisp PROPERTIES PREFIX "")
+	target_link_libraries(moduleelisp fun)
+
+	configure_file(${PROJECT_SOURCE_DIR}/main.el ${PROJECT_BINARY_DIR} COPYONLY)
+	add_test(NAME Test_Elisp COMMAND ${EMACS} --batch -Q -l ./main.el)
+  else ()
+	message("No modules in Emacs version: ${EMACS_VERSION}")
+  endif()
+
+
+endif()
+
 # For tests ######################################
 enable_testing()
 add_subdirectory(test)
