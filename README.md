@@ -49,4 +49,6 @@ This is a simple project to show in how:
 
 * Interface Elisp-C using the emacs module from Emacs-25. This includes the emacs-modules.h header because it is not available in all the systems, even when Emacs supports it. The interface is made barely simple and for real applications the high level wrapper is most recommended for error prevention.
 
+* Interface PHP-C this uses the default php C api, but is compatible only with the php7 C api for simplicity. Code modification shouldn't be complicated to make it backward compatible, but I keep it **as is ** for simplicity. Something really pending is the update in the future of the CMakeLists.txt to search a more general PHP than now.
+
 Author: Jimmy Aguilar Mena

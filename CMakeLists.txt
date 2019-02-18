@@ -416,6 +416,21 @@ if (EMACS)
 
 endif()
 
+# Elisp ###########################################
+
+find_package(PHP4)
+
+if (PHP4_INCLUDE_PATH)
+  add_library(modulephp SHARED ${PROJECT_SOURCE_DIR}/src/c-php.c)
+  target_include_directories(modulephp PRIVATE ${PHP4_INCLUDE_PATH})
+  target_link_libraries(modulephp fun)
+
+  configure_file(${PROJECT_SOURCE_DIR}/main.php ${PROJECT_BINARY_DIR} COPYONLY)
+  add_test(NAME Test_PHP COMMAND ${PHP4_EXECUTABLE} -dextension=./libmodulephp.so -f main.php)
+else ()
+	message("No php header found")
+endif ()
+
 # For tests ######################################
 enable_testing()
 add_subdirectory(test)

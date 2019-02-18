@@ -1,3 +1,5 @@
+<?php
+
 /*
  * This file is part of the MultiCallC distribution Copyright (c) 2015 Jimmy
  * Aguilar Mena.
@@ -16,28 +18,18 @@
  */
 
 
-#include "libfun.h"
+for ($i = 0; $i < 5; $i++)
+	printf("%d\tx^2=%2d\tx^3=%2d\n", $i, square($i), cube($i));
 
-int main()
-{
-	int i;
+const size = 6;
+$arr = array();
 
-	// First test
-	for (i = 0; i < 5; i++)
-		printf("%d\tx^2=%2d\tx^3=%2d\n", i, square(i), cube(i));
+for ($i = 0; $i < size; $i++)
+	$arr[$i] = (float)($i + 1);
 
-	// Secound test, pass array
-	const int size = 6;
-	double arr[size];
+myprint(size, $arr);
 
-	for (i = 0; i < size; i++)
-		arr[i] = (double)(i+1);
+$str = 'my string';
+myprintstr($str);
 
-	print(size, arr);
-
-	// Third test
-	char str[] = "my string";
-	printstr(str);
-
-	return 0;
-}
+?>
