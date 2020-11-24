@@ -123,7 +123,6 @@ emacs_value my_cube(emacs_env *env, ptrdiff_t nargs,
 emacs_value my_print(emacs_env *env, ptrdiff_t nargs,
 					 emacs_value args[], void *data)
 {
-
 	size_t csize = env->extract_integer(env, args[0]);
 	size_t size = env->vec_size(env, args[1]);
 
@@ -135,15 +134,11 @@ emacs_value my_print(emacs_env *env, ptrdiff_t nargs,
 		emacs_value valuei = env->vec_get(env, args[1], i);
 		carray[i] = env->extract_float(env, valuei);
 	}
-
 	print(csize, carray);
 
 	free(carray);
 
-	emacs_value nil = env->intern (env, "nil");
-	if (env->non_local_exit_check (env) != emacs_funcall_exit_return)
-		return NULL;
-	return nil;
+	return env->intern (env, "t");
 }
 
 
@@ -151,7 +146,6 @@ emacs_value my_printstr(emacs_env *env, ptrdiff_t nargs,
 						emacs_value args[], void *data)
 {
 	size_t len = 0;
-
 	bool have_size = env->copy_string_contents(env, args[0], NULL, &len);
 	assert(have_size);
 
@@ -162,6 +156,7 @@ emacs_value my_printstr(emacs_env *env, ptrdiff_t nargs,
 	printstr(cmystring);
 
 	free(cmystring);
+	return env->intern (env, "t");
 }
 
 int emacs_module_init(struct emacs_runtime *ert)
