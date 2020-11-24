@@ -197,31 +197,31 @@ else (RUSTC_COMPILER)
   message(STATUS "Rust compiler not found")
 endif (RUSTC_COMPILER)
 
-# Go #############################################
+# GCCGO #############################################
 
-find_program(GCCGO_COMPILER gccgo)
+find_program(GO_COMPILER gccgo)
 
-if (GCCGO_COMPILER)
-  message(STATUS "Found GCCGO compiler: ${GCCGO_COMPILER}")
+if (GO_COMPILER)
+  message(STATUS "Found GCCGO compiler: ${GO_COMPILER}")
 
-  function (buildgo input output)
-	set(SOURCE_GO "${PROJECT_SOURCE_DIR}/${input}")
+  function (buildgo output input)
+	set(SOURCE_GO "${CMAKE_CURRENT_SOURCE_DIR}/${input}")
+	set(BINARY_GO "${CMAKE_CURRENT_BINARY_DIR}/${output}")
 
 	add_custom_command(OUTPUT ${output}
-      COMMAND ${GCCGO_COMPILER} ${SOURCE_GO} -o ${output} -L${PROJECT_BINARY_DIR} -lfun -Wl,-rpath,${PROJECT_BINARY_DIR}
-      DEPENDS fun "${PROJECT_SOURCE_DIR}/main.go"
-      WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-      )
+	  COMMAND ${GO_COMPILER} ${SOURCE_GO} -o ${BINARY_GO} -L${PROJECT_BINARY_DIR} -lfun -Wl,-rpath,${PROJECT_BINARY_DIR}
+	  DEPENDS fun ${SOURCE_GO}
+	  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
-	add_custom_target("${output}_go" ALL DEPENDS ${output})
+	add_custom_target("${output}" ALL DEPENDS ${output})
   endfunction ()
 
-  buildgo(main.go main_go)
-  add_test(NAME Test_Go COMMAND main_go)
+  buildgo(main_gccgo main_gcc.go)
+  add_test(NAME Test_Go COMMAND main_gccgo)
 
-else (GCCGO_COMPILER)
+else (GO_COMPILER)
   message(STATUS "GCCGO compiler not found")
-endif (GCCGO_COMPILER)
+endif (GO_COMPILER)
 
 # Lua ############################################
 
