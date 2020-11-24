@@ -31,7 +31,9 @@ This is a simple project to show in how:
 
 * Interface Rust-C with unsafe and std functions, support for rust manually added in the CMake.
 
-* Intergace Go-C without the seudo-package "C" and compiling directly with gccgo. Maybe sometimes I will add other version.
+* Intergace Go-C with the seudo-package "C" and using header flags. This compiles directly with **go build**
+
+* Interface Go-C without the seudo-package "C" and compiling directly with gccgo.
 
 * Interface Lua-C using the Lua C API and compiling with the intrinsic cmake's FindLua. In the script a custom *printf* is defined to get the exact same output as the other benchmarks.
 

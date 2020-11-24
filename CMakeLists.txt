@@ -199,29 +199,56 @@ endif (RUSTC_COMPILER)
 
 # GCCGO #############################################
 
-find_program(GO_COMPILER gccgo)
+find_program(GCCGO_COMPILER gccgo)
+
+if (GCCGO_COMPILER)
+  message(STATUS "Found GCCGO compiler: ${GCCGO_COMPILER}")
+
+  function (buildgccgo output input)
+	set(SOURCE_GO "${CMAKE_CURRENT_SOURCE_DIR}/${input}")
+	set(BINARY_GO "${CMAKE_CURRENT_BINARY_DIR}/${output}")
+
+	add_custom_command(OUTPUT ${output}
+	  COMMAND ${GCCGO_COMPILER} ${SOURCE_GO} -o ${BINARY_GO} -L${PROJECT_BINARY_DIR} -lfun -Wl,-rpath,${PROJECT_BINARY_DIR}
+	  DEPENDS fun ${SOURCE_GO}
+	  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+
+	add_custom_target("${output}_gccgo" ALL DEPENDS ${output})
+  endfunction ()
+
+  buildgccgo(main_gccgo main_gcc.go)
+  add_test(NAME Test_GccGo COMMAND main_gccgo)
+
+else (GCCGO_COMPILER)
+  message(STATUS "GCCGO compiler not found")
+endif (GCCGO_COMPILER)
+
+# # Go #############################################
+
+find_program(GO_COMPILER "go")
 
 if (GO_COMPILER)
-  message(STATUS "Found GCCGO compiler: ${GO_COMPILER}")
+  message(STATUS "Found GO compiler: ${GO_COMPILER}")
 
   function (buildgo output input)
 	set(SOURCE_GO "${CMAKE_CURRENT_SOURCE_DIR}/${input}")
 	set(BINARY_GO "${CMAKE_CURRENT_BINARY_DIR}/${output}")
 
 	add_custom_command(OUTPUT ${output}
-	  COMMAND ${GO_COMPILER} ${SOURCE_GO} -o ${BINARY_GO} -L${PROJECT_BINARY_DIR} -lfun -Wl,-rpath,${PROJECT_BINARY_DIR}
+	  COMMAND ${GO_COMPILER} build -o ${BINARY_GO} ${SOURCE_GO}
 	  DEPENDS fun ${SOURCE_GO}
 	  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
-	add_custom_target("${output}" ALL DEPENDS ${output})
+	add_custom_target("${output}_go" ALL DEPENDS ${output})
   endfunction ()
 
-  buildgo(main_gccgo main_gcc.go)
-  add_test(NAME Test_Go COMMAND main_gccgo)
+  buildgo(main_go main.go)
+  add_test(NAME Test_Go COMMAND main_go)
 
 else (GO_COMPILER)
   message(STATUS "GCCGO compiler not found")
 endif (GO_COMPILER)
+
 
 # Lua ############################################
 
