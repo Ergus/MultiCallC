@@ -18,17 +18,13 @@
 cmake_minimum_required (VERSION 3.4)
 
 project(CMake-CTest
-        VERSION 1.0
-        LANGUAGES C CXX Fortran)
-
-project (Jimmy C CXX Fortran)
+  VERSION 1.0
+  LANGUAGES C CXX Fortran)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
-file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
-set_source_files_properties(${PROJECT_SOURCE_DIR}/src/*.cc PROPERTIES COMPILE_FLAGS -fPIC)
-
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
+file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 
 # Build C library ################################
 
@@ -106,7 +102,7 @@ if (Java_FOUND AND JNI_FOUND)
   add_library(modulejava MODULE ${PROJECT_SOURCE_DIR}/src/c-java.cc)
 
   target_include_directories(modulejava PRIVATE ${JAVA_INCLUDE_PATH}
-		${JAVA_INCLUDE_PATH2} ${PROJECT_SOURCE_DIR}/include)
+    ${JAVA_INCLUDE_PATH2} ${PROJECT_SOURCE_DIR}/include)
 
   target_link_libraries(modulejava fun ${JNI_LIBRARIES})
 
@@ -179,16 +175,16 @@ find_program(RUSTC_COMPILER rustc)
 
 if (RUSTC_COMPILER)
   message(STATUS "Found Rust compiler: ${RUSTC_COMPILER}")
-  function(buildrs input output)
-	set(SOURCE_RS "${PROJECT_SOURCE_DIR}/${input}")
 
-	add_custom_command(OUTPUT ${output}
+  function(buildrs input output)
+    set(SOURCE_RS "${PROJECT_SOURCE_DIR}/${input}")
+
+    add_custom_command(OUTPUT ${output}
       COMMAND ${RUSTC_COMPILER} -C link-args=-Wl,-rpath,${PROJECT_BINARY_DIR} -L${PROJECT_BINARY_DIR} -lfun ${SOURCE_RS} -o ${output}
       DEPENDS fun "${PROJECT_SOURCE_DIR}/main.rs"
-      WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-      )
+      WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 
-	add_custom_target("${output}_rs" ALL DEPENDS ${output})
+    add_custom_target("${output}_rs" ALL DEPENDS ${output})
   endfunction()
 
   buildrs(main.rs main_rs)
@@ -205,15 +201,15 @@ if (GCCGO_COMPILER)
   message(STATUS "Found GCCGO compiler: ${GCCGO_COMPILER}")
 
   function (buildgccgo output input)
-	set(SOURCE_GO "${CMAKE_CURRENT_SOURCE_DIR}/${input}")
-	set(BINARY_GO "${CMAKE_CURRENT_BINARY_DIR}/${output}")
+    set(SOURCE_GO "${CMAKE_CURRENT_SOURCE_DIR}/${input}")
+    set(BINARY_GO "${CMAKE_CURRENT_BINARY_DIR}/${output}")
 
-	add_custom_command(OUTPUT ${output}
-	  COMMAND ${GCCGO_COMPILER} ${SOURCE_GO} -o ${BINARY_GO} -L${PROJECT_BINARY_DIR} -lfun -Wl,-rpath,${PROJECT_BINARY_DIR}
-	  DEPENDS fun ${SOURCE_GO}
-	  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+    add_custom_command(OUTPUT ${output}
+      COMMAND ${GCCGO_COMPILER} ${SOURCE_GO} -o ${BINARY_GO} -L${PROJECT_BINARY_DIR} -lfun -Wl,-rpath,${PROJECT_BINARY_DIR}
+      DEPENDS fun ${SOURCE_GO}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
-	add_custom_target("${output}_gccgo" ALL DEPENDS ${output})
+    add_custom_target("${output}_gccgo" ALL DEPENDS ${output})
   endfunction ()
 
   buildgccgo(main_gccgo main_gcc.go)
@@ -225,21 +221,21 @@ endif (GCCGO_COMPILER)
 
 # # Go #############################################
 
-find_program(GO_COMPILER "go")
+find_program(GO_COMPILER go)
 
 if (GO_COMPILER)
   message(STATUS "Found GO compiler: ${GO_COMPILER}")
 
   function (buildgo output input)
-	set(SOURCE_GO "${CMAKE_CURRENT_SOURCE_DIR}/${input}")
-	set(BINARY_GO "${CMAKE_CURRENT_BINARY_DIR}/${output}")
+    set(SOURCE_GO "${CMAKE_CURRENT_SOURCE_DIR}/${input}")
+    set(BINARY_GO "${CMAKE_CURRENT_BINARY_DIR}/${output}")
 
-	add_custom_command(OUTPUT ${output}
-	  COMMAND ${GO_COMPILER} build -o ${BINARY_GO} ${SOURCE_GO}
-	  DEPENDS fun ${SOURCE_GO}
-	  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+    add_custom_command(OUTPUT ${output}
+      COMMAND ${GO_COMPILER} build -o ${BINARY_GO} ${SOURCE_GO}
+      DEPENDS fun ${SOURCE_GO}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
-	add_custom_target("${output}_go" ALL DEPENDS ${output})
+    add_custom_target("${output}_go" ALL DEPENDS ${output})
   endfunction ()
 
   buildgo(main_go main.go)
@@ -290,19 +286,19 @@ if (FPC_COMPILER)
   message(STATUS "Found FPC compiler: ${FPC_COMPILER}")
 
   function (buildfpc input output)
-	set(SOURCE_FPC "${PROJECT_SOURCE_DIR}/${input}")
+    set(SOURCE_FPC "${PROJECT_SOURCE_DIR}/${input}")
 
-	add_custom_command(OUTPUT ${output}
+    add_custom_command(OUTPUT ${output}
       COMMAND ${FPC_COMPILER} ${SOURCE_FPC} -Fl${PROJECT_BINARY_DIR}
-										  -FE${PROJECT_BINARY_DIR}
-										  -k-rpath
-										  -k${PROJECT_BINARY_DIR}
-										  -o${output}
+      -FE${PROJECT_BINARY_DIR}
+      -k-rpath
+      -k${PROJECT_BINARY_DIR}
+      -o${output}
       DEPENDS fun ${SOURCE_FPC}
       WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
       )
 
-	add_custom_target("${output}_pas" ALL DEPENDS ${output})
+    add_custom_target("${output}_pas" ALL DEPENDS ${output})
   endfunction ()
 
   buildfpc(main.pas main_pascal)
@@ -320,18 +316,18 @@ if (GNAT_BIND AND GNAT_LINK)
   message(STATUS "Found ADA: ${GNAT_BIND} and ${GNAT_BIND}")
 
   function (buildada input output)
-	set(SOURCE_ADA "${PROJECT_SOURCE_DIR}/${input}")
-	set(ALI "${output}.ali")
+    set(SOURCE_ADA "${PROJECT_SOURCE_DIR}/${input}")
+    set(ALI "${output}.ali")
 
-	add_custom_command(OUTPUT ${output}
+    add_custom_command(OUTPUT ${output}
       COMMAND gcc -c ${SOURCE_ADA}
-	  COMMAND ${GNAT_BIND} -x ${ALI}
-	  COMMAND ${GNAT_LINK} ${ALI} -o ${output} --LINK=gcc -L${PROJECT_BINARY_DIR} -lfun -Wl,-rpath,${PROJECT_BINARY_DIR}
+      COMMAND ${GNAT_BIND} -x ${ALI}
+      COMMAND ${GNAT_LINK} ${ALI} -o ${output} --LINK=gcc -L${PROJECT_BINARY_DIR} -lfun -Wl,-rpath,${PROJECT_BINARY_DIR}
       DEPENDS fun ${SOURCE_ADA}
       WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
       )
 
-	add_custom_target("${output}_ada" ALL DEPENDS ${output})
+    add_custom_target("${output}_ada" ALL DEPENDS ${output})
   endfunction ()
 
   buildada(main_ada.adb main_ada)
@@ -368,7 +364,7 @@ if (OCAMLC)
   message(STATUS "Found ocaml compiler: ${OCAMLC}")
 
   execute_process(COMMAND ${OCAMLC} -where
-	OUTPUT_VARIABLE OCAML_INCLUDE_DIR
+    OUTPUT_VARIABLE OCAML_INCLUDE_DIR
     OUTPUT_STRIP_TRAILING_WHITESPACE)
 
   add_library(moduleocaml SHARED ${PROJECT_SOURCE_DIR}/src/c-ocaml.c)
@@ -376,16 +372,16 @@ if (OCAMLC)
   target_link_libraries(moduleocaml fun)
 
   function (buildocaml input output)
-	set(SOURCE_OCAML "${PROJECT_SOURCE_DIR}/${input}")
+    set(SOURCE_OCAML "${PROJECT_SOURCE_DIR}/${input}")
 
-	add_custom_command(OUTPUT ${output}
-	  #COMMAND ${OCAMLC} ${SOURCE_OCAML} -dllpath ${PROJECT_BINARY_DIR} -dllib libmoduleocaml -o ${output} -I ${PROJECT_BINARY_DIR}
-	  COMMAND ${OCAMLC} ${SOURCE_OCAML} -cclib "-L${PROJECT_BINARY_DIR} -lmoduleocaml -Wl,-rpath,${PROJECT_BINARY_DIR}" -o ${output} -I ${PROJECT_BINARY_DIR}
+    add_custom_command(OUTPUT ${output}
+      #COMMAND ${OCAMLC} ${SOURCE_OCAML} -dllpath ${PROJECT_BINARY_DIR} -dllib libmoduleocaml -o ${output} -I ${PROJECT_BINARY_DIR}
+      COMMAND ${OCAMLC} ${SOURCE_OCAML} -cclib "-L${PROJECT_BINARY_DIR} -lmoduleocaml -Wl,-rpath,${PROJECT_BINARY_DIR}" -o ${output} -I ${PROJECT_BINARY_DIR}
       DEPENDS fun ${SOURCE_OCAML} moduleocaml
       WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
       )
 
-	add_custom_target("${output}_ocaml" ALL DEPENDS ${output})
+    add_custom_target("${output}_ocaml" ALL DEPENDS ${output})
   endfunction ()
 
   buildocaml(main.ml main_ocaml)
@@ -429,15 +425,15 @@ if (EMACS)
   string(REGEX REPLACE "GNU Emacs ([0-9]+\\.[0-9]) *" "\\1" EMACS_VERSION ${OUTTEST})
 
   if (${EMACS_VERSION} GREATER 26)
-	message(STATUS "Found Emacs Version: " ${EMACS_VERSION})
-	add_library(moduleelisp SHARED ${PROJECT_SOURCE_DIR}/src/c-elisp.c)
-	set_target_properties(moduleelisp PROPERTIES PREFIX "")
-	target_link_libraries(moduleelisp fun)
+    message(STATUS "Found Emacs Version: " ${EMACS_VERSION})
+    add_library(moduleelisp SHARED ${PROJECT_SOURCE_DIR}/src/c-elisp.c)
+    set_target_properties(moduleelisp PROPERTIES PREFIX "")
+    target_link_libraries(moduleelisp fun)
 
-	configure_file(${PROJECT_SOURCE_DIR}/main.el ${PROJECT_BINARY_DIR} COPYONLY)
-	add_test(NAME Test_Elisp COMMAND ${EMACS} --batch -Q -l ./main.el)
+    configure_file(${PROJECT_SOURCE_DIR}/main.el ${PROJECT_BINARY_DIR} COPYONLY)
+    add_test(NAME Test_Elisp COMMAND ${EMACS} --batch -Q -l ./main.el)
   else ()
-	message("No modules in Emacs version: ${EMACS_VERSION}")
+    message("No modules in Emacs version: ${EMACS_VERSION}")
   endif()
 
 
@@ -455,7 +451,7 @@ if (PHP4_INCLUDE_PATH)
   configure_file(${PROJECT_SOURCE_DIR}/main.php ${PROJECT_BINARY_DIR} COPYONLY)
   add_test(NAME Test_PHP COMMAND ${PHP4_EXECUTABLE} -dextension=./libmodulephp.so -f main.php)
 else ()
-	message("No php header found")
+  message("No php header found")
 endif ()
 
 # For tests ######################################
