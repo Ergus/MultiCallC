@@ -66,7 +66,7 @@ PHP_NAMED_FUNCTION(my_printstr)
 	char *mystring;
 	long len;   // Very important to use long and not int
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &mystring, &len) == FAILURE)
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &mystring, &len) == FAILURE)
         RETURN_NULL();
 
 	printstr(mystring);
