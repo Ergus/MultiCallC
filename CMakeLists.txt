@@ -95,10 +95,6 @@ find_package(Java MODULE)
 find_package(JNI MODULE)
 
 if (Java_FOUND AND JNI_FOUND)
-  set(jversion ${Java_VERSION_MAJOR}.${Java_VERSION_MINOR})
-
-  set(CMAKE_JAVA_COMPILE_FLAGS "-source" ${jversion} "-target" ${jversion})
-
   add_library(modulejava MODULE ${PROJECT_SOURCE_DIR}/src/c-java.cc)
 
   target_include_directories(modulejava PRIVATE ${JAVA_INCLUDE_PATH}
@@ -251,7 +247,7 @@ endif (GO_COMPILER)
 find_package(Lua MODULE)
 
 if (LUA_FOUND)
-  add_library(modulelua SHARED ${PROJECT_SOURCE_DIR}/src/c-lua.c)
+  add_library(modulelua MODULE ${PROJECT_SOURCE_DIR}/src/c-lua.c)
   target_include_directories(modulelua PRIVATE ${LUA_INCLUDE_DIR})
   target_link_libraries(modulelua fun ${LUA_LIBRARIES})
 
@@ -268,7 +264,7 @@ find_library(LIBGUILE libguile-2.2.so)
 if (GUILE AND LIBGUILE AND GUILE_INCLUDE_DIR)
   message(STATUS "Found Guile: ${GUILE}")
 
-  add_library(modulescheme SHARED ${PROJECT_SOURCE_DIR}/src/c-scheme.c)
+  add_library(modulescheme MODULE ${PROJECT_SOURCE_DIR}/src/c-scheme.c)
   target_include_directories(modulescheme PRIVATE ${GUILE_INCLUDE_DIR})
   target_link_libraries(modulescheme fun ${LIBGUILE})
 
@@ -345,7 +341,7 @@ find_library(LIBTCL libtcl.so)
 if (TCL_INCLUDE_DIR AND LIBTCL)
   message(STATUS "Found header and libraries in: ${TCL_INCLUDE_DIR} and ${LIBTCL}")
 
-  add_library(moduletcl SHARED ${PROJECT_SOURCE_DIR}/src/c-tcl.c)
+  add_library(moduletcl MODULE ${PROJECT_SOURCE_DIR}/src/c-tcl.c)
   target_include_directories(moduletcl PRIVATE ${TCL_INCLUDE_DIR})
   set_target_properties(moduletcl PROPERTIES PREFIX "")
   target_link_libraries(moduletcl fun ${LIBTCL})
@@ -367,7 +363,7 @@ if (OCAMLC)
     OUTPUT_VARIABLE OCAML_INCLUDE_DIR
     OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-  add_library(moduleocaml SHARED ${PROJECT_SOURCE_DIR}/src/c-ocaml.c)
+  add_library(moduleocaml MODULE ${PROJECT_SOURCE_DIR}/src/c-ocaml.c)
   target_include_directories(moduleocaml PRIVATE ${OCAML_INCLUDE_DIR})
   target_link_libraries(moduleocaml fun)
 
@@ -400,7 +396,7 @@ if (BASH_INCLUDE_DIR)
 
   set(BASH_INCLUDES ${BASH_INCLUDE_DIR} ${BASH_INCLUDE_DIR}/builtins ${BASH_INCLUDE_DIR}/include)
 
-  add_library(modulebash SHARED ${PROJECT_SOURCE_DIR}/src/c-bash.c)
+  add_library(modulebash MODULE ${PROJECT_SOURCE_DIR}/src/c-bash.c)
   target_include_directories(modulebash PRIVATE ${BASH_INCLUDES})
   #set_target_properties(modulebash PROPERTIES PREFIX "")
   target_link_libraries(modulebash fun)
@@ -426,7 +422,7 @@ if (EMACS)
 
   if (${EMACS_VERSION} GREATER 26)
     message(STATUS "Found Emacs Version: " ${EMACS_VERSION})
-    add_library(moduleelisp SHARED ${PROJECT_SOURCE_DIR}/src/c-elisp.c)
+    add_library(moduleelisp MODULE ${PROJECT_SOURCE_DIR}/src/c-elisp.c)
     set_target_properties(moduleelisp PROPERTIES PREFIX "")
     target_link_libraries(moduleelisp fun)
 
@@ -444,7 +440,7 @@ endif()
 find_package(PHP4)
 
 if (PHP4_INCLUDE_PATH)
-  add_library(modulephp SHARED ${PROJECT_SOURCE_DIR}/src/c-php.c)
+  add_library(modulephp MODULE ${PROJECT_SOURCE_DIR}/src/c-php.c)
   target_include_directories(modulephp PRIVATE ${PHP4_INCLUDE_PATH})
   target_link_libraries(modulephp fun)
 
