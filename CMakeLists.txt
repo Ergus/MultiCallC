@@ -19,7 +19,7 @@ cmake_minimum_required (VERSION 3.4)
 
 project(CMake-CTest
   VERSION 1.0
-  LANGUAGES C CXX Fortran)
+  LANGUAGES C CXX Fortran ASM)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
@@ -42,14 +42,14 @@ if (NASM)
   enable_language(ASM_NASM)
 
   set(CMAKE_ASM_NASM_COMPILER ${NASM})
-  set(CMAKE_ASM_NASM_LINKER "gcc")
-
 
   set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <FLAGS> -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} -o <OBJECT> <SOURCE>")
-  set(CMAKE_ASM_NASM_LINK_EXECUTABLE "${CMAKE_ASM_NASM_LINKER} <OBJECTS> -o <TARGET> <LINK_LIBRARIES> -Wl,-rpath,<CMAKE_CURRENT_BINARY_DIR>")
+  set(CMAKE_NASM_LINK_EXECUTABLE "gcc <OBJECTS> -o <TARGET> <LINK_LIBRARIES> -Wl,-rpath,<CMAKE_CURRENT_BINARY_DIR>")
+  # set(CMAKE_NASM_LINK_EXECUTABLE "ld <CMAKE_ASM_NASM_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES> -rpath=<CMAKE_CURRENT_BINARY_DIR>")
 
   add_executable(main_asm main.asm)
   target_link_libraries(main_asm fun)
+  set_target_properties(main_asm PROPERTIES LINKER_LANGUAGE NASM)
 
   add_test(NAME Test_NASM COMMAND main_asm)
 else ()
