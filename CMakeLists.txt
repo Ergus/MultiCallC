@@ -34,7 +34,7 @@ add_library(fun SHARED ${PROJECT_SOURCE_DIR}/src/libfun.cc)
 
 find_program(NASM "nasm")
 
-IF (NASM)
+if (NASM)
   message(STATUS "Found NASM compiler: ${NASM}")
   set(CMAKE_C_SIZEOF_DATA_PTR 8)
   set(ASM_DIALECT "_NASM")
@@ -52,9 +52,9 @@ IF (NASM)
   target_link_libraries(main_asm fun)
 
   add_test(NAME Test_NASM COMMAND main_asm)
-ELSE (NASM)
+else ()
   message(WARNING "NASM compiler NOT found: " ${NASM})
-ENDIF (NASM)
+endif (NASM)
 
 # C main_c #######################################
 
@@ -110,43 +110,53 @@ if (Java_FOUND AND JNI_FOUND)
     COMMAND ${Java_JAVA_EXECUTABLE}
     -Djava.library.path=${CMAKE_CURRENT_BINARY_DIR}
     -cp ${_jarFile} main_j)
-else (Java_FOUND AND JNI_FOUND)
-  message("Java not found")
+else ()
+  message(WARNING "Java not found")
 endif (Java_FOUND AND JNI_FOUND)
 
 # For Python executable using CTypes #############
 
-set(Python_ADDITIONAL_VERSIONS 3.7 3.6 3.5 3.4 3.3 3.2 3.1)
-FIND_PACKAGE(PythonInterp MODULE)
+find_package(Python MODULE COMPONENTS Interpreter Development)
 
-IF(PYTHONINTERP_FOUND)
-  configure_file(${PROJECT_SOURCE_DIR}/main_CTypes.py ${PROJECT_BINARY_DIR})
-  add_test(NAME Test_Python_CTypes COMMAND main_CTypes.py)
-ENDIF(PYTHONINTERP_FOUND)
+if (Python_FOUND)
+  message(STATUS "Found Python ID:${Python_INTERPRETER_ID} version:${Python_VERSION}")
 
-# For python2 using the wrapper in C side ########
+  if (Python_Interpreter_FOUND)
+    message(STATUS " Found Python_Interpreter:${Python_EXECUTABLE}")
+    configure_file(${PROJECT_SOURCE_DIR}/main_CTypes.py ${PROJECT_BINARY_DIR})
+    add_test(NAME Test_Python_CTypes COMMAND main_CTypes.py)
+  else ()
+    message(WARNING " Python_Interpreter not found")
+  endif (Python_Interpreter_FOUND)
 
-find_package(PythonLibs MODULE)
 
-IF(PYTHONLIBS_FOUND)
-  add_library(modulepython MODULE ${PROJECT_SOURCE_DIR}/src/c-python.c)
-  set_target_properties(modulepython PROPERTIES PREFIX "")
-  target_link_libraries(modulepython fun ${PYTHON_LIBRARIES})
-  target_include_directories(modulepython PRIVATE ${PYTHON_INCLUDE_DIRS})
+  if (Python_Development_FOUND)
+    message(STATUS " Found Python_Development in: ${Python_LIBRARY_DIRS}")
+    add_library(modulepython MODULE ${PROJECT_SOURCE_DIR}/src/c-python.c)
+    set_target_properties(modulepython PROPERTIES PREFIX "")
+    target_include_directories(modulepython PRIVATE ${Python_INCLUDE_DIRS})
+    target_link_libraries(modulepython fun ${Python_LIBRARIES})
 
-  configure_file(${PROJECT_SOURCE_DIR}/main_CAPI.py ${PROJECT_BINARY_DIR})
-  add_test(NAME Test_Python_C_API COMMAND main_CAPI.py)
-ENDIF(PYTHONLIBS_FOUND)
+    configure_file(${PROJECT_SOURCE_DIR}/main_CAPI.py ${PROJECT_BINARY_DIR})
+    add_test(NAME Test_Python_C_API COMMAND main_CAPI.py)
+  else ()
+    message(WARNING " Python_Development not found")
+  endif (Python_Development_FOUND)
+
+else ()
+  message(WARNING " Python not found")
+endif ()
 
 # For Julia executable ###########################
 
 find_program(JULIA_EXECUTABLE julia)
 
 if (JULIA_EXECUTABLE)
+  message(STATUS "Found Julia: ${JULIA_EXECUTABLE}")
   configure_file(${PROJECT_SOURCE_DIR}/main.jl ${PROJECT_BINARY_DIR})
   add_test(NAME Test_Julia COMMAND ${JULIA_EXECUTABLE} main.jl)
-else(JULIA_EXECUTABLE)
-  message(STATUS "Julia executable not found!!")
+else()
+  message(WARNING "Julia executable not found!!")
 endif (JULIA_EXECUTABLE)
 
 # For Ruby executable ############################
@@ -154,6 +164,7 @@ endif (JULIA_EXECUTABLE)
 find_package(Ruby MODULE)
 
 if (RUBY_FOUND)
+  message(STATUS "Found Ruby_EXECUTABLE: ${Ruby_EXECUTABLE} version: ${Ruby_VERSION}")
   configure_file(${PROJECT_SOURCE_DIR}/main_ffi.rb ${PROJECT_BINARY_DIR})
   add_test(NAME Test_Ruby_ffi COMMAND ${RUBY_EXECUTABLE} main_ffi.rb)
 
@@ -163,6 +174,8 @@ if (RUBY_FOUND)
   target_link_libraries(moduleruby fun ${RUBY_LIBRARIES})
   configure_file(${PROJECT_SOURCE_DIR}/main_CAPI.rb ${PROJECT_BINARY_DIR})
   add_test(NAME Test_Ruby_C_API COMMAND ${RUBY_EXECUTABLE} main_CAPI.rb)
+else ()
+  message(WARNING "Ruby not found")
 endif (RUBY_FOUND)
 
 # Rust ###########################################
@@ -185,8 +198,8 @@ if (RUSTC_COMPILER)
 
   buildrs(main.rs main_rs)
   add_test(NAME Test_Rust COMMAND main_rs)
-else (RUSTC_COMPILER)
-  message(STATUS "Rust compiler not found")
+else ()
+  message(WARNING "Rust compiler not found")
 endif (RUSTC_COMPILER)
 
 # GCCGO #############################################
@@ -211,8 +224,8 @@ if (GCCGO_COMPILER)
   buildgccgo(main_gccgo main_gcc.go)
   add_test(NAME Test_GccGo COMMAND main_gccgo)
 
-else (GCCGO_COMPILER)
-  message(STATUS "GCCGO compiler not found")
+else ()
+  message(WARNING "GCCGO compiler not found")
 endif (GCCGO_COMPILER)
 
 # # Go #############################################
@@ -237,7 +250,7 @@ if (GO_COMPILER)
   buildgo(main_go main.go)
   add_test(NAME Test_Go COMMAND main_go)
 
-else (GO_COMPILER)
+else ()
   message(STATUS "GCCGO compiler not found")
 endif (GO_COMPILER)
 
@@ -247,12 +260,15 @@ endif (GO_COMPILER)
 find_package(Lua MODULE)
 
 if (LUA_FOUND)
+  message(STATUS "Found LUA_LIBRARIES: ${LUA_LIBRARIES} version: ${LUA_VERSION_STRING}")
   add_library(modulelua MODULE ${PROJECT_SOURCE_DIR}/src/c-lua.c)
   target_include_directories(modulelua PRIVATE ${LUA_INCLUDE_DIR})
   target_link_libraries(modulelua fun ${LUA_LIBRARIES})
 
   configure_file(${PROJECT_SOURCE_DIR}/main.lua ${PROJECT_BINARY_DIR})
   add_test(NAME Test_Lua COMMAND main.lua)
+else ()
+  message(WARNING "Lua not found")
 endif (LUA_FOUND)
 
 # Scheme-guile ###################################
@@ -271,7 +287,7 @@ if (GUILE AND LIBGUILE AND GUILE_INCLUDE_DIR)
   configure_file(${PROJECT_SOURCE_DIR}/main.scm ${PROJECT_BINARY_DIR})
   add_test(NAME Test_Guile COMMAND main.scm)
 else ()
-  message(STATUS "Guile not found: guile=${GUILE} libguile=${LIBGUILE}")
+  message(WARNING "Guile not found: guile=${GUILE} libguile=${LIBGUILE}")
 endif()
 
 # Pascal #########################################
@@ -299,8 +315,8 @@ if (FPC_COMPILER)
 
   buildfpc(main.pas main_pascal)
   add_test(NAME Test_Pascal COMMAND main_pascal)
-else (FPC_COMPILER)
-  message(STATUS "Pascal compiler fpc not found")
+else ()
+  message(WARNING "Pascal compiler fpc not found")
 endif (FPC_COMPILER)
 
 # Ada ###########################################
@@ -330,7 +346,7 @@ if (GNAT_BIND AND GNAT_LINK)
   add_test(NAME Test_Ada COMMAND main_ada)
 
 else ()
-  message(STATUS "GNATLINK and GNATBIND not found")
+  message(WARNING "GNATLINK and GNATBIND not found")
 endif()
 
 # Tcl ############################################
@@ -349,7 +365,7 @@ if (TCL_INCLUDE_DIR AND LIBTCL)
   configure_file(${PROJECT_SOURCE_DIR}/main.tcl ${PROJECT_BINARY_DIR})
   add_test(NAME Test_Tcl COMMAND main.tcl)
 else ()
-  message(STATUS "tcl library or header not found")
+  message(WARNING "tcl library or header not found")
 endif ()
 
 # Ocaml ##########################################
@@ -384,8 +400,8 @@ if (OCAMLC)
   add_test(NAME Test_ocaml COMMAND main_ocaml)
 
 else ()
-  message(STATUS "ocaml compiler or header not found")
-endif ()
+  message(WARNING "ocaml compiler or header not found")
+endif (OCAMLC)
 
 # Bash ###########################################
 
@@ -405,8 +421,8 @@ if (BASH_INCLUDE_DIR)
   add_test(NAME Test_Bash COMMAND main.bash)
 
 else ()
-  message(STATUS "no bash headers found")
-endif()
+  message(WARNING "bash headers path not found")
+endif (BASH_INCLUDE_DIR)
 
 # Elisp ###########################################
 
@@ -419,9 +435,9 @@ if (EMACS)
   string(SUBSTRING ${OUTTEST} 0 ${SLEN} OUTTEST)
 
   string(REGEX REPLACE "GNU Emacs ([0-9]+\\.[0-9]) *" "\\1" EMACS_VERSION ${OUTTEST})
+  message(STATUS "Found Emacs: ${EMACS} version: " ${EMACS_VERSION})
 
   if (${EMACS_VERSION} GREATER 26)
-    message(STATUS "Found Emacs Version: " ${EMACS_VERSION})
     add_library(moduleelisp MODULE ${PROJECT_SOURCE_DIR}/src/c-elisp.c)
     set_target_properties(moduleelisp PROPERTIES PREFIX "")
     target_link_libraries(moduleelisp fun)
@@ -431,11 +447,11 @@ if (EMACS)
   else ()
     message("No modules in Emacs version: ${EMACS_VERSION}")
   endif()
+else ()
+  message(WARNING "Emacs not found")
+endif (EMACS)
 
-
-endif()
-
-# Elisp ###########################################
+# PHP ###########################################
 
 find_package(PHP4)
 
@@ -447,7 +463,7 @@ if (PHP4_INCLUDE_PATH)
   configure_file(${PROJECT_SOURCE_DIR}/main.php ${PROJECT_BINARY_DIR} COPYONLY)
   add_test(NAME Test_PHP COMMAND ${PHP4_EXECUTABLE} -dextension=./libmodulephp.so -f main.php)
 else ()
-  message("No php header found")
+  message(WARNING "php header path not found")
 endif ()
 
 # For tests ######################################
